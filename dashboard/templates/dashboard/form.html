@@ -1,0 +1,173 @@
+{% extends "dashboard/base.html"%}
+{% load static%}
+
+{% block content %}
+
+<!-- ============================================================== -->
+<!-- Bread crumb and right sidebar toggle -->
+<!-- ============================================================== -->
+<div class="page-breadcrumb border-bottom">
+    <div class="row">
+      <div class=" col-lg-3 col-md-4 col-xs-12 justify-content-start d-flex align-items-center " >
+        <h5 class="font-weight-medium text-uppercase mb-0">Nouvelle Intervention</h5>
+      </div>
+      <div class=" col-lg-9 col-md-8 col-xs-12 d-flex justify-content-start justify-content-md-end align-self-center " >
+        <nav aria-label="breadcrumb" class="mt-2">
+          <ol class="breadcrumb mb-0 p-0">
+            <li class="breadcrumb-item" aria-current="page">
+                Maintenance Curative
+            </li> 
+            <li class="breadcrumb-item active" aria-current="page">
+              Nouvelle Intervention
+            </li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <!-- ============================================================== -->
+  <!-- End Bread crumb and right sidebar toggle -->
+  <!-- ============================================================== -->
+  <!-- ============================================================== -->
+  <!-- Container fluid  -->
+  <!-- ============================================================== -->
+  <div class="page-content container-fluid">
+      <!-- Formulaire -->
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-header bg-info">
+              <h4 class="mb-0 text-white">Ajouter Nouvelle Intervention</h4>
+            </div>
+            <form action="#">
+              <div>
+                <div class="card-body">
+                  <div class="row pt-3">
+                    <h4 class="card-title"><u>Informations Générales</u></h4>
+                    <div class="col-md-1">
+                      <div class="mb-3">
+                        <label class="control-label">Criticité</label>
+                        <select class="form-control custom-select">
+                            <option value="">C1</option>
+                            <option value="">C2</option>
+                            <option value="">C3</option>
+                        </select>                      
+                      </div>
+                    </div>
+                    <!--/span-->
+                    <div class="col-md-11">
+                      <div class="mb-3 ">
+                        <label class="control-label">Désignation</label>
+                        <input type="text" id="lastName" class="form-control form-control-danger" placeholder="" />
+                      </div>
+                    </div>
+                    <!--/span-->
+                  </div>
+                  <hr/>
+                  <!--/row-->
+                  <div class="row">
+                    <h4 class="card-title"><u>Repérage Spatial</u></h4>
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="control-label">Zone</label>
+                        <select class="form-control custom-select">
+                          <option value="">Zone 1</option>
+                          <option value="">Zone 2</option>
+                        </select>
+                      </div>
+                    </div>
+                    <!--/span-->
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                          <label class="control-label">Espace</label>
+                          <select class="form-control custom-select">
+                            <option value="">Espace 1</option>
+                            <option value="">Espace 2</option>
+                            <option value="">Espace 3</option>
+                          </select>
+                        </div>
+                    </div>
+                    <!--/span-->
+                  </div>
+                  <hr/>
+                  <!--/row-->
+                  <div class="row">
+                    <h4 class="card-title"><u>Équipement</u></h4>  
+                    <div class="col-md-4">
+                      <div class="mb-3">
+                        <label class="control-label">Lot Technique</label>
+                        <select class="form-control custom-select">
+                          <option value="">Lot 1</option>
+                          <option value="">Lot 2</option>
+                        </select>
+                      </div>
+                    </div>
+                    <!--/span-->
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="control-label">Famille d'équipement</label>
+                            <select class="form-control custom-select">
+                            <option value="">Lot 1</option>
+                            <option value="">Lot 2</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!--/span-->
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                          <label class="control-label">Équipement</label>
+                          <select class="form-control custom-select">
+                            <option value="">Equipement 1</option>
+                            <option value="">Equipement 2</option>
+                            <option value="">Equipement 3</option>
+                          </select>
+                        </div>
+                    </div>
+                    <!--/span-->
+                  </div>
+                  <hr/>
+                  <div class="row">
+                    <h4 class="card-title"><u>Informations Complémentaires</u></h4>  
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                          <label class="control-label">Déscription</label>
+                          <textarea  id="lastName" class="form-control " placeholder="" ></textarea>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                          <label class="control-label">Image</label>
+                          <input class="form-control" type="file" id="formFile" accept="image" />
+                        </div>
+                    </div>
+                  </div>
+                  <!--/row-->
+                </div>
+                <div class="form-actions">
+                  <div class="card-body border-top">
+                    <button type="submit" class="btn btn-success rounded-pill px-4" >
+                      <div class="d-flex align-items-center">
+                        <i data-feather="save" class="feather-sm me-1 fill-icon" ></i> 
+                      </div>
+                    </button>
+                    <button type="button" class=" btn btn-danger rounded-pill px-4 ms-2 text-white " >
+                      Annuler
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- Row -->
+  </div>
+  <!-- ============================================================== -->
+  <!-- End Container fluid  -->
+  <!-- ============================================================== -->
+  <!-- ============================================================== -->
+  
+{% endblock content %}
+

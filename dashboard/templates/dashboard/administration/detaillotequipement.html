@@ -1,0 +1,142 @@
+{% extends "dashboard/base.html"%}
+{% load static%} 
+{% block title %}
+<a class="nav-link waves-effect waves-dark"  href="{% url 'sites' %}" >                  
+  <span class="d-none d-md-block">ADMINISTRATION</span>
+</a>
+{% endblock title %}
+{% block content %}
+<!-- ============================================================== -->
+<!-- Tab Section -->
+<!-- ============================================================== -->
+<div class="col-md-12">         
+  <div class="card">
+    <div class="card-body">
+      <!-- Nav tabs -->
+      <ul class="nav nav-pills flex-column flex-sm-row" role="tablist" >
+        <li class="nav-item flex-sm-fill text-sm-center">
+          <a class="nav-link " href="{% url 'sites' %}" >
+            <span><i class="mdi mdi-sitemap "></i>  Sites</span>
+          </a>
+        </li>
+        <li class="nav-item flex-sm-fill text-sm-center">
+          <a class="nav-link" href="{% url 'collabs' %}" >
+            <span><i class="mdi mdi-account-multiple "></i>  Collaborateurs</span>
+          </a>
+        </li>
+        <li class="nav-item flex-sm-fill text-sm-center">
+          <a class="nav-link active" href="{% url 'lotequipements' %}" >
+            <span><i class="mdi mdi-settings"></i>  Equipements</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- ============================================================== -->
+<!-- Bread crumb and right sidebar toggle -->
+<!-- ============================================================== -->
+<div class="page-breadcrumb border-bottom">
+    <div class="row">
+        <div class=" col-lg-3 col-md-4 col-xs-12 justify-content-start d-flex align-items-center ">
+            <h5 class="font-weight-medium text-uppercase mb-0">{{lot.designation}}</h5>
+        </div>
+        <div class=" col-lg-9 col-md-8 col-xs-12 d-flex justify-content-start justify-content-md-end align-self-center " >
+            <nav aria-label="breadcrumb" class="mt-2">
+                <ol class="breadcrumb mb-0 p-0">
+                    <li class="breadcrumb-item">Administration</li>
+                    <li class="breadcrumb-item">Equipements</li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                      Lots Equipements
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- ============================================================== -->
+<!-- End Bread crumb and right sidebar toggle -->
+<!-- ============================================================== -->
+<!-- Container fluid  -->
+<!-- ============================================================== -->
+<div class="page-content container-fluid">    
+{% if messages %}
+  {% for message in messages%}
+    <div class="alert alert-{{ message.tags}} alert-dismissible fade show" role="alert">
+      {{message}}
+      <button type="button" class="btn-close text-white" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+{% endif %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex align-items-center px-3 py-4 border-bottom">
+            <div>
+              <h4 class="card-title">Sous-Lots</h4>
+            </div>
+            <div class="ms-auto">
+              <a class="btn btn-circle btn-success text-white " href="{% url 'newsouslot' lot.id %}" >
+                <i class="ti-plus"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive" >
+          <table class="table no-wrap user-table mb-0">
+            <thead class="table-light">
+              <tr>
+                <th style="width: 50%" scope="col" class="border-0 fs-4 font-weight-medium ps-4" >
+                  Désignation 
+                </th>
+                <th style="width: 40%" scope="col" class="border-0 fs-4 font-weight-medium" >
+                  Libellé
+                </th>
+                <th style="width: 10%" scope="col" class="border-0 fs-4 font-weight-medium" >
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for slot in slots %}
+              <tr>
+                <td class="ps-4">
+                  <h5 class="font-weight-medium mb-0">
+                    {{slot.designation}}
+                  </h5>
+                </td>
+                <td>
+                  {{ slot.libelle }}
+                </td>
+                <td>
+                  <a href="{% url 'detailsouslot' slot.id %}" class="text-info edit" >
+                    <i data-feather="eye" class="feather-sm fill-white" ></i>
+                  </a>
+                  <a href="{% url 'updatesouslot' slot.id %}" class="text-dark delete ms-2" >
+                    <i data-feather="edit" class="feather-sm fill-white" ></i>
+                  </a>
+                  <a href="{% url 'deletesouslot' slot.id %}"class="text-danger delete ms-2" >
+                    <i data-feather="trash-2" class="feather-sm fill-white" ></i>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}              
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- ============================================================== -->
+<!-- End Container fluid  -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+
+{% endblock content %}
+
+{% block footer %}
+
+{% endblock footer %}

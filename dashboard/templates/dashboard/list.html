@@ -1,0 +1,294 @@
+{% extends "dashboard/base.html"%}
+{% load static%}
+
+{% block content %}
+
+<!-- ============================================================== -->
+<!-- Bread crumb and right sidebar toggle -->
+<!-- ============================================================== -->
+<div class="page-breadcrumb border-bottom">
+    <div class="row">
+      <div class=" col-lg-3 col-md-4 col-xs-12 justify-content-start d-flex align-items-center " >
+        <h5 class="font-weight-medium text-uppercase mb-0">Nouvelle Intervention</h5>
+      </div>
+      <div class=" col-lg-9 col-md-8 col-xs-12 d-flex justify-content-start justify-content-md-end align-self-center " >
+        <nav aria-label="breadcrumb" class="mt-2">
+          <ol class="breadcrumb mb-0 p-0">
+            <li class="breadcrumb-item" aria-current="page">
+                Maintenance Curative
+            </li> 
+            <li class="breadcrumb-item active" aria-current="page">
+              Nouvelle Intervention
+            </li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <!-- ============================================================== -->
+  <!-- End Bread crumb and right sidebar toggle -->
+  <!-- ============================================================== -->
+  <!-- ============================================================== -->
+  <!-- Container fluid  -->
+  <!-- ============================================================== -->
+  <div class="page-content container-fluid">
+      <!-- Formulaire -->
+    <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <form action="#">
+              <div>
+                <div class="card-body">
+                  <div class="row">
+                    <h4 class="card-title"><u>Filtre</u></h4>
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="control-label">Zone</label>
+                        <select class="form-control custom-select">
+                          <option value="">Zone 1</option>
+                          <option value="">Zone 2</option>
+                        </select>
+                      </div>
+                    </div>
+                    <!--/span-->
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                          <label class="control-label">Espace</label>
+                          <select class="form-control custom-select">
+                            <option value="">Espace 1</option>
+                            <option value="">Espace 2</option>
+                            <option value="">Espace 3</option>
+                          </select>
+                        </div>
+                    </div>
+                    <!--/span-->
+                  </div>
+                  <!--/row-->
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="mb-3">
+                        <label class="control-label">Lot Technique</label>
+                        <select class="form-control custom-select">
+                          <option value="">Lot 1</option>
+                          <option value="">Lot 2</option>
+                        </select>
+                      </div>
+                    </div>
+                    <!--/span-->
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="control-label">Famille d'équipement</label>
+                            <select class="form-control custom-select">
+                            <option value="">Lot 1</option>
+                            <option value="">Lot 2</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!--/span-->
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                          <label class="control-label">Équipement</label>
+                          <select class="form-control custom-select">
+                            <option value="">Equipement 1</option>
+                            <option value="">Equipement 2</option>
+                            <option value="">Equipement 3</option>
+                          </select>
+                        </div>
+                    </div>
+                    <!--/span-->
+                  </div>
+                  <!--/row-->
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="control-label">Date Début</label>
+                        <input type="date" class="form-control" />
+                      </div>
+                    </div>
+                    <!--/span-->
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="control-label">Date Fin</label>   
+                            <input type="date" class="form-control" />                         
+                        </div>
+                    </div>
+                    <!--/span-->
+                </div>
+                </div>
+                <div class="form-actions">
+                  <div class="card-body border-top">
+                    <button type="submit" class="btn btn-secondary rounded-pill px-4" >
+                      <div class="d-flex align-items-center">
+                        <i data-feather="filter" class="feather-sm me-1 fill-icon" ></i> Filtrer </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+    </div>
+    <!-- Row -->
+<!-- Charts  -->
+<!-- ============================================================== -->
+<!--Interventions lot Bar Chart -->
+<div class="row">
+    <div class="col-8">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title"><u>Interventions par Lot Technique</u></h4>
+          <div id="chart-bar-stacked"></div>
+        </div>
+      </div>
+    </div>
+    <!--Interventions etat Bar Chart -->
+    <div class="col-lg-4 d-flex align-items-stretch">
+      <div class="card w-100">
+        <div class="card-body">
+          <h5 class="card-title"><u>Etat des interventions</u></h5>
+          <div class="mt-3">
+            <div id="etat"></div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center card-body">
+          <div>
+            <h5 class="text-muted fw-normal">Total Interventions :148 </h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Charts -->
+</div>
+<!-- ============================================================== -->
+<!-- End Container fluid  -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- Liste des interventions  -->
+<!-- ============================================================== -->
+<div class="row">
+    <div class="col-md-12 col-lg-12">
+      <div class="card ">
+        <div class="d-flex align-items-center p-3">
+          <h5 class="card-title mb-0"><u>Liste des Interventions</u></h5>
+        </div>
+        <div class="p-3">
+          <div class="table-responsive scrollable" style="height: 531px">
+            <table class="table mb-0 no-wrap recent-table table-hover">
+              <thead>
+                <tr>
+                  <th>Num</th>                  
+                  <th>Désignation</th>                  
+                  <th>Equipement</th>                  
+                  <th>Zone</th>
+                  <th>Date</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="txt-oflo">1</td> 
+                  <td class="txt-oflo">INSTALLATION DES ONDULEURS 3KVA ( 02 ONDULEURS 3KVA )</td>                  
+                  <td class="txt-oflo">Onduleurs</td>
+                  <td><span class="txt-oflo">Ministère de l'intérieur</span></td>
+                  <td><span class="txt-oflo">10/12/2021</span></td>
+                  <td>
+                    <button type="button" class=" btn btn-light-secondary btn-circle btn-sm d-inline-flex align-items-center justify-content-center " >
+                    <i data-feather="eye" class="feather-sm fill-white text-secondary" ></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="txt-oflo">2</td> 
+                  <td class="txt-oflo">MAINTENANCE PRÉVENTIVE MENSUELLE DU GROUPE ELECTROGENE</td>                  
+                  <td class="txt-oflo">Groupe Eléctrogéne</td>
+                  <td><span class="txt-oflo">CVC</span></td>
+                  <td><span class="txt-oflo">11/12/2021</span></td>
+                  <td>
+                    <button type="button" class=" btn btn-light-secondary btn-circle btn-sm d-inline-flex align-items-center justify-content-center " >
+                    <i data-feather="eye" class="feather-sm fill-white text-secondary" ></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="txt-oflo">3</td> 
+                  <td class="txt-oflo">CHANGEMENT DES LAMPES DÉFECTUEUSES</td>                  
+                  <td class="txt-oflo">Lampes</td>
+                  <td><span class="txt-oflo">ANNEXE - GARAGE HAY SALAM</span></td>
+                  <td><span class="txt-oflo">11/12/2021</span></td>
+                  <td>
+                    <button type="button" class=" btn btn-light-secondary btn-circle btn-sm d-inline-flex align-items-center justify-content-center " >
+                    <i data-feather="eye" class="feather-sm fill-white text-secondary" ></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="txt-oflo">4</td> 
+                  <td class="txt-oflo">DÉMARRAGE À VIDE DU GROUPE ÉLECTROGÈNE CATERPILLAR</td>                  
+                  <td class="txt-oflo">Groupe Eléctrogéne</td>
+                  <td><span class="txt-oflo">CVC</span></td>
+                  <td><span class="txt-oflo">11/12/2021</span></td>
+                  <td>
+                    <button type="button" class=" btn btn-light-secondary btn-circle btn-sm d-inline-flex align-items-center justify-content-center " >
+                    <i data-feather="eye" class="feather-sm fill-white text-secondary" ></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="txt-oflo">5</td> 
+                  <td class="txt-oflo">INSTALLATION DES ONDULEURS 3KVA ( 02 ONDULEURS 3KVA )</td>                  
+                  <td class="txt-oflo">Onduleurs</td>
+                  <td><span class="txt-oflo">Ministère de l'intérieur</span></td>
+                  <td><span class="txt-oflo">10/12/2021</span></td>
+                  <td>
+                    <button type="button" class=" btn btn-light-secondary btn-circle btn-sm d-inline-flex align-items-center justify-content-center " >
+                    <i data-feather="eye" class="feather-sm fill-white text-secondary" ></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="txt-oflo">6</td> 
+                  <td class="txt-oflo">MAINTENANCE PRÉVENTIVE MENSUELLE DU GROUPE ELECTROGENE</td>                  
+                  <td class="txt-oflo">Groupe Eléctrogéne</td>
+                  <td><span class="txt-oflo">CVC</span></td>
+                  <td><span class="txt-oflo">11/12/2021</span></td>
+                  <td>
+                    <button type="button" class=" btn btn-light-secondary btn-circle btn-sm d-inline-flex align-items-center justify-content-center " >
+                    <i data-feather="eye" class="feather-sm fill-white text-secondary" ></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="txt-oflo">7</td> 
+                  <td class="txt-oflo">CHANGEMENT DES LAMPES DÉFECTUEUSES</td>
+                  <td class="txt-oflo">Lampes</td>
+                  <td><span class="txt-oflo">ANNEXE - GARAGE HAY SALAM</span></td>
+                  <td><span class="txt-oflo">11/12/2021</span></td>
+                  <td>
+                    <button type="button" class=" btn btn-light-secondary btn-circle btn-sm d-inline-flex align-items-center justify-content-center " >
+                    <i data-feather="eye" class="feather-sm fill-white text-secondary" ></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="txt-oflo">8</td> 
+                  <td class="txt-oflo">DÉMARRAGE À VIDE DU GROUPE ÉLECTROGÈNE CATERPILLAR</td>                  
+                  <td class="txt-oflo">Groupe Eléctrogéne</td>
+                  <td><span class="txt-oflo">CVC</span></td>
+                  <td><span class="txt-oflo">11/12/2021</span></td>
+                  <td>
+                    <button type="button" class=" btn btn-light-secondary btn-circle btn-sm d-inline-flex align-items-center justify-content-center " >
+                    <i data-feather="eye" class="feather-sm fill-white text-secondary" ></i></button>
+                  </td>
+                </tr>                
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+<!-- ============================================================== -->
+  
+{% endblock content %}
+
+{% block footer %}
+
+<!-- This Page JS -->
+<script src="{% static 'dashboard/assets/libs/apexcharts/dist/apexcharts.min.js' %}"></script>
+<script src="{% static 'dashboard/dist/js/hpms/list.js' %}"></script>
+
+{% endblock footer %}

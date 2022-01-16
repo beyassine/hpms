@@ -1,0 +1,156 @@
+{% extends "dashboard/base.html"%}
+{% load static%} 
+{% block title %}
+<a class="nav-link waves-effect waves-dark"  href="{% url 'sites' %}" >                  
+  <span class="d-none d-md-block text-uppercase ">{{site.designation}}</span>
+</a>
+{% endblock title %}
+{% block content %}
+<!-- ============================================================== -->
+<!-- Tab Section -->
+<!-- ============================================================== -->
+<div class="col-md-12">         
+  <div class="card">
+    <div class="card-body">
+      <!-- Nav tabs -->
+      <ul class="nav nav-pills flex-column flex-sm-row" role="tablist" >
+        <li class="nav-item flex-sm-fill text-sm-center">
+          <a class="nav-link " href="{% url 'sitehome' site.id %}" >
+            <span><i class="mdi mdi-view-dashboard"></i> Tableau de Bord</span>
+          </a>
+        </li>
+        <li class="nav-item flex-sm-fill text-sm-center">
+          <a class="nav-link active" href="{% url 'curative' site.id %}" >
+            <span><i class="mdi mdi-clipboard-alert"></i>  Maintenance Curative</span>
+          </a>
+        </li>
+        <li class="nav-item flex-sm-fill text-sm-center">
+          <a class="nav-link" href="{% url 'preventive' site.id %}" >
+            <span><i class="mdi mdi-calendar "></i> Maintenance Préventive</span>
+          </a>
+        </li>
+        <li class="nav-item flex-sm-fill text-sm-center">
+          <a class="nav-link" href="{% url 'stock' site.id %}" >
+            <span><i class="mdi mdi-layers"></i>  Gestion Stock</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- ============================================================== -->
+<!-- Bread crumb and right sidebar toggle -->
+<!-- ============================================================== -->
+<div class="page-breadcrumb border-bottom">
+  <div class="row">
+      <div class=" col-lg-3 col-md-4 col-xs-12 justify-content-start d-flex align-items-center ">
+          <h5 class="font-weight-medium text-uppercase mb-0">{{site.designation}}</h5>
+      </div>
+      <div class=" col-lg-9 col-md-8 col-xs-12 d-flex justify-content-start justify-content-md-end align-self-center " >
+          <nav aria-label="breadcrumb" class="mt-2">
+              <ol class="breadcrumb mb-0 p-0">
+                  <li class="breadcrumb-item">Sites</li>
+                  <li class="breadcrumb-item active" aria-current="page">
+                    Maintenance Curative
+                  </li>
+              </ol>
+          </nav>
+      </div>
+  </div>
+</div>
+<!-- ============================================================== -->
+<!-- End Bread crumb and right sidebar toggle -->
+<!-- ============================================================== -->
+<!-- Container fluid  -->
+<!-- ============================================================== -->
+<div class="page-content container-fluid">
+{% if messages %}
+  {% for message in messages%}
+    <div class="alert alert-{{ message.tags}} alert-dismissible fade show" role="alert">
+      {{message}}
+      <button type="button" class="btn-close text-white" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+{% endif %}
+
+  <!-- Liste des interventions  -->
+  <!-- ============================================================== -->
+  <div class="row">
+    <div class="col-md-12 col-lg-12">
+      <div class="card ">
+        <div class="card-body">
+          <div class="d-flex align-items-center px-3 py-4 border-bottom">
+            <div>
+              <h4 class="card-title">Interventions Curatives</h4>
+            </div>
+            <div class="ms-auto">
+              <a class="btn btn-circle btn-secondary text-white" data-bs-toggle="collapse" href="#collapseExample"
+                    role="button" aria-expanded="false" aria-controls="collapseExample" > 
+                    <i class="ti-filter"></i>
+              </a>              
+              <a class="btn btn-circle btn-success text-white " href="{% url 'newcurative' site.id %}" >
+                <i class="ti-plus"></i>
+              </a>
+            </div>
+          </div>
+          <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+              Filtre en cours
+            </div>
+          </div>
+        </div>
+        <div class="p-3">          
+          <div class="table-responsive scrollable" style="height: 450px">
+            <table class="table mb-0 no-wrap recent-table table-hover">
+              <thead class="bg-light">
+                <tr>
+                  <th style="width: 5%">Statut</th>                  
+                  <th style="width: 40%">Désignation</th>                  
+                  <th style="width: 20%">Equipement</th>  
+                  <th style="width: 20%">Zone</th>  
+                  <th style="width: 10%">Date</th>
+                  <th style="width: 5%"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for tache in taches %}
+                <tr>
+                  <td>
+                    <span class="badge text-secondary font-weight-medium bg-light-secondary label-rouded" >{{tache.statut}}</span>
+                  </td>
+                  <td class="txt-oflo">{{tache.objet}}</td> 
+                  <td class="txt-oflo">{{tache.equipement}}</td>
+                  <td class="txt-oflo">{{tache.zone}}</td>
+                  <td><span class="txt-oflo">{{tache.datecreated|date:"d/m/Y"}}</span></td>
+                  <td>
+                    <a href="{% url 'curativedetail' tache.id %}" class="text-info edit" >
+                      <i data-feather="eye" class="feather-sm fill-white" ></i>
+                    </a>
+                    <a href="{% url 'updatecurative' tache.id %}" class="text-dark delete ms-2" >
+                      <i data-feather="edit" class="feather-sm fill-white" ></i>
+                    </a>
+                    <a href="{% url 'deletecurative' tache.id %}" class="text-danger delete ms-2" >
+                      <i data-feather="trash-2" class="feather-sm fill-white" ></i>
+                    </a>
+                  </td>                  
+                </tr>
+                {% endfor %}              
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- ============================================================== -->
+<!-- End Container fluid  -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+
+{% endblock content %}
+
+{% block footer %}
+
+{% endblock footer %}
