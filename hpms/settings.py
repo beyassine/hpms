@@ -128,5 +128,3 @@ CRISPY_TEMPLATE_PACK='bootstrap4'
 
 LOGIN_REDIRECT_URL='home'
 LOGIN_URL='login'
-
-django_heroku.settings(locals())
