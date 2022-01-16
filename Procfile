@@ -1,0 +1,1 @@
+web: gunicorn hpms.wsgi --log-file -
