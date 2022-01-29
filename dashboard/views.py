@@ -446,7 +446,7 @@ def newcurative(request,pk):
         form=CurativeForm(site,request.POST)
         if form.is_valid():
             form.instance.site=site
-            form.instance.auteur=request.user
+            form.instance.auteur=User.objects.get(username='admin')
             form.save()
             messages.success(request, f'Nouvelle Intervention Curative ajoutée avec succés')
             return redirect('curative',pk=site.id)

@@ -112,7 +112,7 @@ class Tache(models.Model):
 	periodicite=models.IntegerField(default=1,verbose_name='Durée d\'intervention (jours)')
 
 	def __str__(self):
-		return f'{self.titre}' 
+		return f'{self.objet}' 
 
 	@property
 	def get_html_url(self):
