@@ -59,6 +59,26 @@ class Equipement(models.Model):
 	def __str__(self):
 		return f'{self.designation}'
 
+#Stock
+
+class Stock(models.Model):
+
+	site=models.ForeignKey(Site,on_delete=models.CASCADE,verbose_name="Site")
+	lot=models.ForeignKey(Lot,on_delete=models.SET_NULL,null=True,verbose_name='Lot',default='')	
+	souslot=models.ForeignKey(Souslot,on_delete=models.SET_NULL,null=True,verbose_name='Sous-Lot',default='')
+	categorie=models.ForeignKey(Categorie,on_delete=models.SET_NULL,null=True,verbose_name='Catégorie',default='')		
+	equipement=models.ForeignKey(Equipement,on_delete=models.SET_NULL,null=True,verbose_name='Equipement',default='')
+	stock=models.IntegerField(default=0,verbose_name='Stock')
+
+class Mouvement(models.Model):
+	mvmnt=((1,'Entrée'),(2,'Sortie'))
+	date=models.DateTimeField(default=timezone.now)
+	stock=models.ForeignKey(Stock,on_delete=models.CASCADE,verbose_name="Stock")
+	mouvement=models.IntegerField(choices=mvmnt,default='1')
+	quantite=models.IntegerField(default=0,verbose_name='Quantité')
+
+
+
 # Tache
 
 class Tache(models.Model):
@@ -112,7 +132,7 @@ class Tache(models.Model):
 	periodicite=models.IntegerField(default=1,verbose_name='Durée d\'intervention (jours)')
 
 	def __str__(self):
-		return f'{self.objet}' 
+		return f'{self.objet }' 
 
 	@property
 	def get_html_url(self):

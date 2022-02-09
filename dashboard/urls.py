@@ -77,6 +77,11 @@ urlpatterns=[
 	path('sites/<int:pk>/preventive',views.preventive,name='preventive'),
 	### Gestion de stock
 	path('sites/<int:pk>/stock',views.stock,name='stock'),
-	
+	path('sites/stock/<int:pk>/noveau',views.newstock,name='newstock'),
+	path('sites/stock/<int:pk>',views.stockdetail,name='stockdetail'),
+	path('sites/stock/<int:pk>/modifier',views.updatestock,name='stockupdate'),
+	path('sites/stock/<int:pk>/supprimer',views.deletestock,name='stockdelete'),
+	path('sites/stock/<int:pk>/noveaumvmnt',views.newmvmnt,name='newmouvement'),
+	path('sites/stock/<int:pk>/supprimermvmnt',views.deletemvmnt,name='deletmouvement'),
 	
 ]

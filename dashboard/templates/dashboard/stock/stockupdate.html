@@ -23,7 +23,7 @@
             </a>
           </li>
           <li class="nav-item flex-sm-fill text-sm-center">
-            <a class="nav-link active" href="{% url 'curative' site.id %}" >
+            <a class="nav-link " href="{% url 'curative' site.id %}" >
               <span><i class="mdi mdi-clipboard-alert"></i>  Maintenance Curative</span>
             </a>
           </li>
@@ -33,7 +33,7 @@
             </a>
           </li>
           <li class="nav-item flex-sm-fill text-sm-center">
-            <a class="nav-link" href="{% url 'stock' site.id %}" >
+            <a class="nav-link active" href="{% url 'stock' site.id %}" >
               <span><i class="mdi mdi-layers"></i>  Gestion Stock</span>
             </a>
           </li>
@@ -47,17 +47,17 @@
 <div class="page-breadcrumb border-bottom">
     <div class="row">
         <div class=" col-lg-3 col-md-4 col-xs-12 justify-content-start d-flex align-items-center ">
-            <h5 class="font-weight-medium text-uppercase mb-0">{{site.designation}}</h5>
+            <h5 class="font-weight-medium text-uppercase mb-0">{{stock.equipement}}</h5>
         </div>
         <div class=" col-lg-9 col-md-8 col-xs-12 d-flex justify-content-start justify-content-md-end align-self-center " >
             <nav aria-label="breadcrumb" class="mt-2">
                 <ol class="breadcrumb mb-0 p-0">
                     <li class="breadcrumb-item">Sites</li>
                     <li class="breadcrumb-item active" aria-current="page">
-                      Maintenance Curative
+                      Gestion Stock
                     </li>
                     <li class="breadcrumb-item active" aria-current="page">
-                        Supprimer
+                        Modifier
                     </li>
                 </ol>
             </nav>
@@ -74,22 +74,50 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
-            <form method="post">
-                {% csrf_token %}
-                <h5 class="mt-3">Êtes vous sur de vouloir supprimer l'intervention : <u>{{tache.objet}}</u> d'une façon permanente ? </h5>
-                <div class="form-actions">
-                  <div class="card-body">              
-                    <div class="d-flex align-items-center p-4">
-                      <div class="ms-auto">
-                        <button type="submit" class="btn btn-danger rounded-pill px-4 float-right" >
-                          <div class="d-flex align-items-center">
-                            <i data-feather="trash-2" class="feather-sm me-1 fill-icon" ></i> Supprimer
-                          </div>
-                        </button>
-                      </div>
+          <form id="stockForm" method="post" data-souslot-url="{% url 'loadsouslot' %}" data-categorie-url="{% url 'loadcategorie' %}" data-equipement-url="{% url 'loadequipement' %}">
+            {% csrf_token %}
+            <div class="row pt-3">              
+              <div class="col-md-9">
+                  <div class="">
+                    {{form.stock|as_crispy_field}}
                   </div>
+              </div>
+            </div>
+            <div class="row pt-3">
+              <div class="col-md-3">
+                <div class=" ">
+                  {{form.lot|as_crispy_field}}                
                 </div>
-            </form>
+              </div>
+              <div class="col-md-3">
+                  <div class="">
+                    {{form.souslot|as_crispy_field}}
+                  </div>
+              </div>
+              <div class="col-md-3">
+                <div class=" ">
+                  {{form.categorie|as_crispy_field}}                
+                </div>
+              </div>
+              <div class="col-md-3">
+                  <div class="">
+                    {{form.equipement|as_crispy_field}}
+                  </div>
+              </div>
+            </div>
+            <div class="form-actions">
+              <div class="card-body">              
+                <div class="d-flex align-items-center p-4">
+                  <div class="ms-auto">
+                    <button type="submit" class="btn btn-success rounded-pill px-4 float-right" >
+                      <div class="d-flex align-items-center">
+                        <i data-feather="save" class="feather-sm me-1 fill-icon" ></i> Enregistrer
+                      </div>
+                    </button>
+                  </div>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -104,5 +132,55 @@
 {% endblock content %}
 
 {% block footer %}
+
+<script type="text/javascript">
+
+  $("#id_lot").change(function () {
+       var url = $("#stockForm").attr("data-souslot-url");  
+       var lotid = $(this).val();   
+       $.ajax({                       
+         url: url,                    
+         data: {
+           'lotid': lotid       
+         },
+         success: function (data) {  
+           $("#id_souslot").html(data);  
+         }
+       }); 
+     });
+ 
+     $("#id_souslot").change(function () {
+       var url = $("#stockForm").attr("data-categorie-url");  
+       var souslotid = $(this).val();   
+       $.ajax({                       
+         url: url,                    
+         data: {
+           'souslotid': souslotid       
+         },
+         success: function (data) {  
+           $("#id_categorie").html(data);  
+         }
+       }); 
+     });
+
+     $("#id_categorie").change(function () {
+       var url = $("#stockForm").attr("data-equipement-url");  
+       var categorieid = $(this).val();   
+       $.ajax({                       
+         url: url,                    
+         data: {
+           'categorieid': categorieid       
+         },
+         success: function (data) {  
+           $("#id_equipement").html(data);  
+         }
+       }); 
+     });
+ 
+ 
+ 
+ 
+ 
+ </script>
 
 {% endblock footer %}

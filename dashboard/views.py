@@ -496,12 +496,108 @@ def preventive(request,pk):
     return render(request,'dashboard/maintenance/preventive.html',context)
 
 
-### Maintenance Préventive
+### Gestion Stock
 
 def stock(request,pk):
     site=Site.objects.get(id=pk)
-    taches=Tache.objects.filter(site=site)
+    stocks=Stock.objects.filter(site=site)
+    context={'site':site,'stocks':stocks}
 
-    context={'site':site,'taches':taches}
+    return render(request,'dashboard/stock/stock.html',context)
 
-    return render(request,'dashboard/maintenance/stock.html',context)
+def newstock(request,pk):
+    site=Site.objects.get(id=pk)
+    if request.method=="POST":
+        form=StockForm(site,request.POST)
+        if form.is_valid():
+            form.instance.site=site
+            form.save()
+            messages.success(request, f'Nouveau stock ajouté avec succés')
+            return redirect('stock',pk=site.id)
+    else:
+        form=StockForm(site)
+
+    context={'site':site,'form':form}
+    return render(request,'dashboard/stock/stocknew.html',context)
+
+def updatestock(request,pk):
+    stock=Stock.objects.get(id=pk)
+    site=stock.site
+    if request.method=="POST":
+        form=StockForm(site,request.POST,instance=stock)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Stock Modifié avec succés')
+            return redirect('stock',pk=site.id)
+    else:
+        form=StockForm(site,instance=stock)
+
+    context={'site':site,'stock':stock,'form':form}
+    return render(request,'dashboard/stock/stockupdate.html',context)
+
+
+def deletestock(request,pk):
+    stock=Stock.objects.get(id=pk)
+    site=stock.site
+
+    if request.method=="POST":
+        stock.delete()
+        messages.success(request, f'Stock supprimé avec succés')
+        return redirect('stock',pk=site.id)    
+    
+    context={'site':site,'stock':stock}
+
+    return render(request,'dashboard/stock/stockdelete.html',context)
+
+
+
+def stockdetail(request,pk):
+    stock=Stock.objects.get(id=pk)
+    site=stock.site
+    mouvements=Mouvement.objects.filter(stock=stock)
+    context={'site':site,'stock':stock,'mouvements':mouvements}
+
+    return render(request,'dashboard/stock/stockdetail.html',context)
+
+def newmvmnt(request,pk):
+    stock=Stock.objects.get(id=pk)
+    site=stock.site
+    if request.method=="POST":
+        form=MouvementForm(request.POST)
+        if form.is_valid():
+            form.instance.stock=stock
+            
+            if form.instance.mouvement == 1 :
+                stock.stock=stock.stock+int(form.instance.quantite)
+                stock.save()
+            else:
+                q=stock.stock-int(form.instance.quantite)
+                if q < 0 :
+                    form.instance.quantite=stock.stock
+                    stock.stock = 0
+                    stock.save()
+                else:
+                    stock.stock=q
+                    stock.save()
+
+            form.save()
+            messages.success(request, f'Nouveau Mouvement ajouté avec succés')
+            return redirect('stockdetail',pk=stock.id)
+
+    else:
+        form=MouvementForm()
+    context={'site':site,'form':form}
+    return render(request,'dashboard/stock/mouvementnew.html',context)
+
+def deletemvmnt(request,pk):
+    mouvement=Mouvement.objects.get(id=pk)
+    stock=mouvement.stock
+    site=stock.site
+
+    if request.method=="POST":
+        mouvement.delete()
+        messages.success(request, f'Mouvement supprimé avec succés')
+        return redirect('stockdetail',pk=stock.id)    
+    
+    context={'site':site,'stock':stock,'mouvement':mouvement}
+    return render(request,'dashboard/stock/mouvementdelete.html',context)
