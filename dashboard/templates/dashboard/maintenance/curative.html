@@ -95,7 +95,81 @@
           </div>
           <div class="collapse" id="collapseExample">
             <div class="card card-body">
-              Filtre en cours
+              <form id="curativeFilter" method="get" data-souslot-url="{% url 'loadsouslot' %}" data-categorie-url="{% url 'loadcategorie' %}" data-equipement-url="{% url 'loadequipement' %}">
+                {% csrf_token %}
+                <div class="row pt-3">
+                  <div class="col-md-1">
+                    <div class=" ">
+                      <h6>Criticité</h6> 
+                      {{filter.form.criticite}}                
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <div class=" ">
+                      <h6>Statut</h6> 
+                      {{filter.form.statut}}                
+                    </div>
+                  </div>                  
+                  <div class="col-md-6">
+                    <div class=" ">
+                      <h6>Zone</h6> 
+                      {{filter.form.zone}}                
+                    </div>
+                  </div>
+                </div>
+                <div class="row pt-3">
+                  <div class="col-md-6">
+                    <div class="">
+                      <h6>Date Début</h6> 
+                      {{filter.form.date_debut}}
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                      <div class="">
+                        <h6>Date Fin</h6> 
+                        {{filter.form.date_fin}}
+                      </div>
+                  </div>
+                </div>
+                <div class="row pt-3">
+                  <div class="col-md-3">
+                    <div class=" ">
+                      <h6>Lot</h6> 
+                      {{filter.form.lot}}                
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                      <div class="">
+                        <h6>Sous Lot</h6> 
+                        {{filter.form.souslot}}
+                      </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class=" ">
+                      <h6>Catégorie</h6> 
+                      {{filter.form.categorie}}                
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                      <div class="">
+                        <h6>Equipement</h6> 
+                        {{filter.form.equipement}}
+                      </div>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <div class="card-body">              
+                    <div class="d-flex align-items-center p-4">
+                      <div class="ms-auto">
+                        <button type="submit" class="btn btn-secondary rounded-pill px-4 float-right" >
+                          <div class="d-flex align-items-center">
+                            Filtrer
+                          </div>
+                        </button>
+                      </div>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -116,7 +190,21 @@
                 {% for tache in taches %}
                 <tr>
                   <td>
+                    {% if tache.statut == 'Enregistrée' %}
                     <span class="badge text-secondary font-weight-medium bg-light-secondary label-rouded" >{{tache.statut}}</span>
+                    {% endif %}
+                    {% if tache.statut == 'Pris en charge' %}
+                    <span class="badge text-info font-weight-medium bg-light-info label-rouded" >{{tache.statut}}</span>
+                    {% endif %}
+                    {% if tache.statut == 'Travaux en cours' %}
+                    <span class="badge text-primary font-weight-medium bg-light-primary label-rouded" >{{tache.statut}}</span>
+                    {% endif %}
+                    {% if tache.statut == 'Pending' %}
+                    <span class="badge text-warning font-weight-medium bg-light-warning label-rouded" >{{tache.statut}}</span>
+                    {% endif %}
+                    {% if tache.statut == 'Résolue' %}
+                    <span class="badge text-success font-weight-medium bg-light-success label-rouded" >{{tache.statut}}</span>
+                    {% endif %}
                   </td>
                   <td class="txt-oflo">{{tache.objet}}</td> 
                   <td class="txt-oflo">{{tache.equipement}}</td>
@@ -152,5 +240,57 @@
 {% endblock content %}
 
 {% block footer %}
+
+<script type="text/javascript">
+
+  $("#id_lot").change(function () {
+       var url = $("#curativeFilter").attr("data-souslot-url");  
+       var lotid = $(this).val();   
+       $.ajax({                       
+         url: url,                    
+         data: {
+           'lotid': lotid       
+         },
+         success: function (data) {  
+           $("#id_souslot").html(data);  
+         }
+       }); 
+     });
+ 
+     $("#id_souslot").change(function () {
+       var url = $("#curativeFilter").attr("data-categorie-url");  
+       var souslotid = $(this).val();   
+       $.ajax({                       
+         url: url,                    
+         data: {
+           'souslotid': souslotid       
+         },
+         success: function (data) {  
+           $("#id_categorie").html(data);  
+         }
+       }); 
+     });
+
+     $("#id_categorie").change(function () {
+       var url = $("#curativeFilter").attr("data-equipement-url");  
+       var categorieid = $(this).val();   
+       $.ajax({                       
+         url: url,                    
+         data: {
+           'categorieid': categorieid       
+         },
+         success: function (data) {  
+           $("#id_equipement").html(data);  
+         }
+       }); 
+     });
+ 
+ 
+ 
+ 
+ 
+ </script>
+
+
 
 {% endblock footer %}

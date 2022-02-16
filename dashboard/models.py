@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.urls import reverse
 from users.models import User
+from PIL import Image
 
 #Site
 class Site(models.Model):
@@ -92,14 +93,12 @@ class Tache(models.Model):
 		('Travaux en cours','Travaux en cours'),
 		('Pending','Pending'),
 		('Résolue','Résolue'),
-		('Clôture','Clôturée'),
 		)
 
 	auteur=models.ForeignKey(User, on_delete=models.SET_NULL,null=True ,verbose_name='Auteur')
 	criticite=models.CharField(max_length=100, choices=criticite,default='c1')
 	statut=models.CharField(max_length=100,choices=statut_choices,default='Pris en charge')
-	objet=models.CharField(max_length=1000,verbose_name='Objet',default='')
-	description=models.TextField(verbose_name='Description',default='',blank=True)
+	objet=models.CharField(max_length=1000,verbose_name='Objet',default='')	
 	#Intervenant
 	intervenant=models.ForeignKey(User,on_delete=models.SET_NULL,null=True ,related_name='Intervenant')
 	#Site
@@ -130,6 +129,13 @@ class Tache(models.Model):
 	datefin=models.DateTimeField(default=timezone.now,verbose_name='Date Fin')
 	#Périodicité
 	periodicite=models.IntegerField(default=1,verbose_name='Durée d\'intervention (jours)')
+	#Fiche
+	description=models.TextField(verbose_name='Description',default='',blank=True)
+	effet=models.TextField(verbose_name=' Effet sur équipement/ouvrage',default='',blank=True)
+	rechange=models.TextField(verbose_name=' Piéces de rechange/Consommable',default='',blank=True)
+	#Images
+	imagepr = models.ImageField(null=True,verbose_name=' Image Etat Finale',upload_to='interventions',blank=True)
+	imagear = models.ImageField(null=True,verbose_name=' Image Etat Initiale ',upload_to='interventions',blank=True)
 
 	def __str__(self):
 		return f'{self.objet }' 

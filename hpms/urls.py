@@ -11,3 +11,6 @@ urlpatterns = [
     path('', include('dashboard.urls')),    
     path('login/',auth_views.LoginView.as_view(template_name='users/login.html',authentication_form=UserLoginForm),name='login'),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

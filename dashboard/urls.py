@@ -73,6 +73,7 @@ urlpatterns=[
 	path('sites/curative/<int:pk>/modifier',views.updatecurative,name='updatecurative'),
 	path('sites/curative/<int:pk>/supprimer',views.deletecurative,name='deletecurative'),
 	path('sites/curative/intervention/<int:pk>',views.curativedetail,name='curativedetail'),
+	path('sites/curative/<int:pk>/modifierfiche',views.fichecurative,name='fichecurative'),
 	### Maintenance Préventive
 	path('sites/<int:pk>/preventive',views.preventive,name='preventive'),
 	### Gestion de stock

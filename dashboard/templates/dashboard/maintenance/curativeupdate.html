@@ -74,7 +74,7 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
-          <form id="curativeForm" method="post" data-souslot-url="{% url 'loadsouslot' %}" data-categorie-url="{% url 'loadcategorie' %}" data-equipement-url="{% url 'loadequipement' %}">
+          <form id="curativeForm" enctype="multipart/form-data" method="post" data-souslot-url="{% url 'loadsouslot' %}" data-categorie-url="{% url 'loadcategorie' %}" data-equipement-url="{% url 'loadequipement' %}">
             {% csrf_token %}
             <div class="row pt-3">
               <div class="col-md-1">
@@ -82,7 +82,12 @@
                   {{form.criticite|as_crispy_field}}                
                 </div>
               </div>
-              <div class="col-md-11">
+              <div class="col-md-3">
+                <div class=" ">
+                  {{form.statut|as_crispy_field}}                
+                </div>
+              </div>
+              <div class="col-md-8">
                   <div class="">
                     {{form.objet|as_crispy_field}}
                   </div>
@@ -120,6 +125,30 @@
                   <div class="">
                     {{form.equipement|as_crispy_field}}
                   </div>
+              </div>
+            </div>
+            <div class="row pt-3">
+              <div class="col-md-6">
+                <div class=" ">
+                  {{form.datedebut|as_crispy_field}}                
+                </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="">
+                    {{form.datefin|as_crispy_field}}
+                  </div>
+              </div>
+            </div>
+            <div class="row pt-3">
+              <div class="col-md-6">
+                <div class=" ">
+                  {{form.imagear|as_crispy_field}}                
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class=" ">
+                  {{form.imagepr|as_crispy_field}}                
+                </div>
               </div>
             </div>
             <div class="form-actions">

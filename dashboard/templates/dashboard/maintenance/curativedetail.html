@@ -77,6 +77,9 @@
       <div class="d-flex align-items-center">
       <h3><b>{{tache.objet}}</b></h3>
       <div class="ms-auto">
+        <a class="btn btn-circle btn-secondary text-white " href="{% url 'fichecurative' tache.id  %}" >
+          <i class="ti-pencil"></i>
+        </a>
         <a class="btn btn-circle btn-warning text-white " >
           <i class="ti-printer"></i>
         </a>
@@ -92,18 +95,57 @@
                   <td>
                     <span><u><strong> Intervention Numéro:</strong></u> {{tache.id}}</span><br/>   
                     <span><u><strong> Type d'intervention:</strong></u> Maintenance Curative</span><br/>
-                    <span class=""><u><strong> Zone:</strong></u> {{tache.zone}}</span><br/>
-                    <span class=""><u><strong> Equipement:</strong></u> {{tache.equipement}}</span><br/>
+                    <span ><u><strong> Zone:</strong></u> {{tache.zone}}</span><br/>
+                    <span ><u><strong> Equipement:</strong></u> {{tache.equipement}}</span><br/>
                   </td>
                   <td  class="text-end">                 
-                    <span class=""><u><strong> Date de la demande:</strong></u> {{tache.datecreated|date:"d/m/Y"}}</span><br/>               
+                    <span ><u><strong> Date de la demande:</strong></u> {{tache.datecreated|date:"d/m/Y"}}</span><br/>               
                     <span><u><strong> Demandeur:</strong></u> {{tache.auteur}}</span><br/>
                                  
                   </td>
                 </tr>               
                 <tr>
-                  <td colspan="2" class="">
-                    <span class=""><u><strong> Statut:</strong></u> &nbsp;{{tache.statut}}</span><br/>
+                  <td>
+                    <span><u><strong> Statut:</strong></u> &nbsp;{{tache.statut}}</span><br/>
+                  </td>
+                  <td class="text-end">
+                    <span ><u><strong> Date Debut :</strong></u> &nbsp;{{tache.datedebut|date:"d/m/Y - H:m"}}</span><br/>
+                    <span ><u><strong> Date Fin :</strong></u>
+                      {% if tache.statut == 'Résolue' %}
+                       {{tache.datecreated|date:"d/m/Y - H:m"}}
+                      {% else %}
+                      &nbsp;&nbsp;&nbsp;--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      {% endif %}
+                    </span><br/>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2" >
+                    <span><u><strong> Description de la cause:</strong></u> &nbsp;{{tache.description}}</span><br/>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2" >
+                    <span><u><strong> Effet sur équipement/ouvrage:</strong></u> &nbsp;{{tache.effet}}</span><br/>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2" >
+                    <span><u><strong> Piéces de rechange/Consommables:</strong></u> &nbsp;{{tache.rechange}}</span><br/>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span><u><strong> Image Etat Initilae:</strong></u></span><br/>
+                    {% if tache.imagear.url != ''  %}                    
+                    <img src="{{ tache.imagear.url }}" class="d-block position-relative w-100" alt="user" />
+                    {% endif %}
+                  </td>
+                  <td  >
+                    <span><u><strong> Image Etat Finale:</strong></u></span><br/>
+                    {% if tache.imagepr.url != ''  %}
+                    <img src="{{ tache.imagepr.url }}" class="d-block position-relative w-100" alt="user" />
+                    {% endif %}
                   </td>
                 </tr>
               </tbody>

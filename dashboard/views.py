@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect
 from .forms import *
+from .filters import *
 from django.contrib import messages
 from users.models import *
 from users.forms import *
@@ -430,8 +431,10 @@ def sitehome(request,pk):
 
 def curative(request,pk):
     site=Site.objects.get(id=pk)
-    taches=Tache.objects.filter(site=site)
-    context={'site':site,'taches':taches}
+    taches=Tache.objects.filter(site=site).order_by('-id')
+    filter=CurativeFliter(site.id,request.GET,request=request,queryset=taches)
+    ftaches=filter.qs
+    context={'site':site,'taches':ftaches,'filter':filter}
     return render(request,'dashboard/maintenance/curative.html',context)
 
 def curativedetail(request,pk):
@@ -443,7 +446,7 @@ def curativedetail(request,pk):
 def newcurative(request,pk):
     site=Site.objects.get(id=pk)
     if request.method=="POST":
-        form=CurativeForm(site,request.POST)
+        form=CurativeForm(site,request.POST,request.FILES)
         if form.is_valid():
             form.instance.site=site
             form.instance.auteur=User.objects.get(username='admin')
@@ -460,13 +463,15 @@ def updatecurative(request,pk):
     tache=Tache.objects.get(id=pk)
     site=tache.site
     if request.method=="POST":
-        form=CurativeForm(site,request.POST,instance=tache)
+        form=UpdateCurativeForm(site,request.POST,request.FILES,instance=tache)
         if form.is_valid():
             form.save()
             messages.success(request, f'Intervention modifiée avec succés')
             return redirect('curativedetail',pk=tache.id)
+        else:
+            print(form.errors)
     else:
-        form=CurativeForm(site,instance=tache)
+        form=UpdateCurativeForm(site,instance=tache)
 
     context={'site':site,'form':form}
     return render(request,'dashboard/maintenance/curativeupdate.html',context)
@@ -483,6 +488,22 @@ def deletecurative(request,pk):
     context={'site':site,'tache':tache}
 
     return render(request,'dashboard/maintenance/curativedelete.html',context)
+
+def fichecurative(request,pk):
+    tache=Tache.objects.get(id=pk)
+    site=tache.site
+    if request.method=="POST":
+        form=FicheForm(request.POST,instance=tache)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Fiche Intervention modifiée avec succés')
+            return redirect('curativedetail',pk=tache.id)
+    else:
+        form=FicheForm(instance=tache)
+
+    context={'site':site,'form':form}
+    return render(request,'dashboard/maintenance/fichecurative.html',context)
+
 
 
 ### Maintenance Préventive
