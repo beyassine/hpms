@@ -14,7 +14,8 @@ from rest_framework import parsers
 from .serializers import *
 import locale
 
-locale.setlocale(locale.LC_ALL, 'fr_FR')
+
+#locale.setlocale(locale.LC_ALL, 'fr_FR')
 
 def home(request):
     return render(request,'dashboard/home.html')
