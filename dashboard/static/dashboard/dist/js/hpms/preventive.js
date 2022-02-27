@@ -1,117 +1,70 @@
 
-// -------------------------------------------------------------------------------------------------------------------------------------------
-// Dashboard 5 : Chart Init Js
-// -------------------------------------------------------------------------------------------------------------------------------------------
-$(function () {
-    "use strict";
+const site_id = JSON.parse(document.getElementById('site_id').textContent); 
+const month = JSON.parse(document.getElementById('month').textContent); 
+e= document.getElementById('tbody_planning')
 
-    var options= {
-        series: [{
-            name: 'Intervention  Préventive Journaliére ',
-            data: [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]
-          },
-          {
-            name: 'Intervention Préventive Hebdomadaire',
-            data: [0,0,4,0,0,0,0,0,0,4,0,0,0,0,0,0,4,0,0,0,0,0,0,4,0,0,0,0,0,0,4]
-          },
-          {
-            name: 'Intervention Préventive Mensuelle',
-            data: [0,0,0,0,0,0,0,0,0,0,0,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-          },
-          {
-            name: 'Intervention Préventive Trimestrielle',
-            data: [0,0,0,0,0,0,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-          },
-          {
-            name: 'Intervention Semestrielle',
-            data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,0,0,0,0,0]
-          },
-          {
-            name: 'Intervention Annuelle',
-            data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0]
-          },
-        ],
-      chart: {
-        fontFamily: '"Nunito Sans", sans-serif',
-        type: "heatmap",
-        height: 350,
-      },
-      plotOptions: {
-        heatmap: {
-          shadeIntensity: 0.5,
-          radius: 0,
-          useFillColorAsStroke: false,
-          colorScale: {
-            ranges: [{
-                from: 0,
-                to: 0.3,
-                name: 'RAS',
-                color: '#C0C0C0'
-              },
-                {
-                from: 1,
-                to: 2,
-                name: 'Journalier',
-                color: '#00A100'
-              },
-              {
-                from: 3,
-                to: 4,
-                name: 'Hebdomadaire',
-                color: '#128FD9'
-              },
-              {
-                from: 5,
-                to: 6,
-                name: 'Mensuel',
-                color: '#FFB200'
-              },
-              {
-                from: 7,
-                to: 8,
-                name: 'Trimestriel',
-                color: '#800000'
-              },
-              {
-                from: 9,
-                to: 10,
-                name: 'Semestriel',
-                color: '#800080'
-              },
-              {
-                from: 11,
-                to: 12,
-                name: 'Annuel',
-                color: '#FF0000'
-              }
-            ]
-          }
+var url = $("#tbody_planning").attr("data-url");  
+
+function n(n){
+  return n > 9 ? "" + n: "0" + n;
+}
+
+fetch(url)
+.then((resp) => resp.json())
+.then(function(data){
+  dm=moment(month, "YYYY-MM-DD").daysInMonth() 
+  tr1=document.createElement('tr')
+  td1=document.createElement('td')
+  td1.setAttribute('class','bg-light')
+  td1.innerHTML='Désignation'
+  tr1.appendChild(td1)
+  for(let d=1;d<=dm;d++){
+  td2=document.createElement('td')
+  td2.innerHTML=n(d)
+  tr1.appendChild(td2)
+  }
+  e.appendChild(tr1)
+  for (let i=0; i< data['planifications'].length ; i++){
+    var cc=''
+    if(data['planifications'][i]['periodicite'] == 'Hebdomadaire'){
+      cc='bg-success text-white'
+    }else if(data['planifications'][i]['periodicite'] == 'Mensuelle'){
+      cc='bg-warning text-white'
+    }else if(data['planifications'][i]['periodicite'] == 'Trimestrielle'){
+      cc='bg-info text-white'
+    }else if(data['planifications'][i]['periodicite'] == 'Semestrielle'){
+      cc='bg-primary text-white'
+    }else if(data['planifications'][i]['periodicite'] == 'Annuelle'){
+      cc='bg-secondary text-white'
+    }
+    tr = document.createElement('tr')
+    td=document.createElement('td')
+    td.setAttribute('class','bg-light')
+    a1=document.createElement('a')
+    url1=`preventive/x/modifier`.replace('x',data['planifications'][i]['id']);
+    a1.setAttribute('href',url1)
+    a1.setAttribute('class','text-decoration-none text-dark')
+    a1.innerHTML=data['planifications'][i]['objet']
+    td.appendChild(a1)
+    tr.appendChild(td)
+    for (let t=1;t<=dm;t++){
+      td =document.createElement('td')
+      td.setAttribute('styke','width:5px;')
+      for (let j=0; j<data['planifications'][i]['interventions'].length; j++){
+        var dtd=moment(data['planifications'][i]['interventions'][j]['datecharge']).format('D');
+        var dtm=moment(data['planifications'][i]['interventions'][j]['datecharge']).format('M');
+        if (dtd == t){
+          url=`preventive/intervention/x`.replace('x',data['planifications'][i]['interventions'][j]['id']);
+          td.setAttribute('class',cc)
+          a=document.createElement('a')
+          a.setAttribute('href',url)
+          a.setAttribute('class','text-decoration-none text-white')
+          a.innerHTML='<i class="ti-info-alt"></i>'
+          td.appendChild(a)
         }
-      },
-      dataLabels: {
-        enabled: false
-      },
-      stroke: {
-        width: 1
-      },
-      legend: {
-        show: true,
-      },
-      tooltip: {
-        enabled: false,
-      },
-      yaxis: {
-        labels: {
-            maxWidth: 300,
-        },
-        },
-    };
-  
-    var chart_heatmap = new ApexCharts(
-      document.querySelector("#chart-heatmap"),
-      options
-    );
-    chart_heatmap.render();
-  
-  });
-  
+      }
+      tr.appendChild(td)
+    }   
+    e.appendChild(tr)
+  }
+})

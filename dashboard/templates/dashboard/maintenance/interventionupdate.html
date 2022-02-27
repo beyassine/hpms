@@ -23,12 +23,12 @@
             </a>
           </li>
           <li class="nav-item flex-sm-fill text-sm-center">
-            <a class="nav-link active" href="{% url 'curative' site.id %}" >
+            <a class="nav-link " href="{% url 'curative' site.id %}" >
               <span><i class="mdi mdi-clipboard-alert"></i>  Maintenance Curative</span>
             </a>
           </li>
           <li class="nav-item flex-sm-fill text-sm-center">
-            <a class="nav-link" href="{% url 'preventive' site.id %}" >
+            <a class="nav-link active" href="{% url 'preventive' site.id %}" >
               <span><i class="mdi mdi-calendar "></i> Maintenance Préventive</span>
             </a>
           </li>
@@ -47,17 +47,17 @@
 <div class="page-breadcrumb border-bottom">
     <div class="row">
         <div class=" col-lg-3 col-md-4 col-xs-12 justify-content-start d-flex align-items-center ">
-            <h5 class="font-weight-medium text-uppercase mb-0">{{site.designation}}</h5>
+            <h5 class="font-weight-medium text-uppercase mb-0">{{intervention.planification.objet}}</h5>
         </div>
         <div class=" col-lg-9 col-md-8 col-xs-12 d-flex justify-content-start justify-content-md-end align-self-center " >
             <nav aria-label="breadcrumb" class="mt-2">
                 <ol class="breadcrumb mb-0 p-0">
-                    <li class="breadcrumb-item">Sites</li>
-                    <li class="breadcrumb-item active" aria-current="page">
-                      Maintenance Curative
+                    <li class="breadcrumb-item">Maintenance Préventive</li>
+                    <li class="breadcrumb-item " aria-current="page">
+                      Fiche d'intervention
                     </li>
                     <li class="breadcrumb-item active" aria-current="page">
-                        Nouveau
+                        Modifier
                     </li>
                 </ol>
             </nav>
@@ -74,66 +74,54 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
-          <form id="curativeForm" method="post" data-souslot-url="{% url 'loadsouslot' %}" data-categorie-url="{% url 'loadcategorie' %}" data-equipement-url="{% url 'loadequipement' %}">
-            {% csrf_token %}
+          <form id="curativeForm" method="post"  enctype="multipart/form-data">
+            {% csrf_token %}            
             <div class="row pt-3">
-              <div class="col-md-1">
-                <div class=" ">
-                  {{form.criticite|as_crispy_field}}                
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class=" ">
-                  {{form.statut|as_crispy_field}}                
-                </div>
-              </div>
-              <div class="col-md-8">
-                  <div class="">
-                    {{form.objet|as_crispy_field}}
+                <div class="col-md-6">
+                  <div class=" ">
+                    {{form.statut|as_crispy_field}}                
                   </div>
-              </div>
+                </div>
+                <div class="col-md-6">
+                    <div class=" ">
+                      {{form.intervenant|as_crispy_field}}                
+                    </div>
+                  </div>
             </div>
             <div class="row pt-3">
-              <div class="col-md-6">
-                <div class="">
-                  {{form.intervenant|as_crispy_field}}
-                </div>
-              </div>
-              <div class="col-md-6">
-                  <div class="">
-                    {{form.zone|as_crispy_field}}
+                <div class="col-md-6">
+                  <div class=" ">
+                    {{form.imagear|as_crispy_field}}                
                   </div>
-              </div>
+                </div>
+                <div class="col-md-6">
+                  <div class=" ">
+                    {{form.imagepr|as_crispy_field}}                
+                  </div>
+                </div>
             </div>
             <div class="row pt-3">
-              <div class="col-md-3">
-                <div class=" ">
-                  {{form.lot|as_crispy_field}}                
-                </div>
-              </div>
-              <div class="col-md-3">
-                  <div class="">
-                    {{form.souslot|as_crispy_field}}
+                <div class="col-md-12">
+                  <div class=" ">
+                    {{form.description|as_crispy_field}}                
                   </div>
-              </div>
-              <div class="col-md-3">
-                <div class=" ">
-                  {{form.categorie|as_crispy_field}}                
                 </div>
-              </div>
-              <div class="col-md-3">
-                  <div class="">
-                    {{form.equipement|as_crispy_field}}
-                  </div>
-              </div>
             </div>
             <div class="row pt-3">
-              <div class="col-md-6">
-                <div class=" ">
-                  {{form.imagear|as_crispy_field}}                
+                <div class="col-md-12">
+                  <div class=" ">
+                    {{form.effet|as_crispy_field}}                
+                  </div>
+                </div>
+            </div>
+            <div class="row pt-3">
+                <div class="col-md-12">
+                  <div class=" ">
+                    {{form.rechange|as_crispy_field}}                
+                  </div>
                 </div>
               </div>
-            </div>
+            
             <div class="form-actions">
               <div class="card-body">              
                 <div class="d-flex align-items-center p-4">
@@ -162,54 +150,5 @@
 
 {% block footer %}
 
-<script type="text/javascript">
-
-  $("#id_lot").change(function () {
-       var url = $("#curativeForm").attr("data-souslot-url");  
-       var lotid = $(this).val();   
-       $.ajax({                       
-         url: url,                    
-         data: {
-           'lotid': lotid       
-         },
-         success: function (data) {  
-           $("#id_souslot").html(data);  
-         }
-       }); 
-     });
- 
-     $("#id_souslot").change(function () {
-       var url = $("#curativeForm").attr("data-categorie-url");  
-       var souslotid = $(this).val();   
-       $.ajax({                       
-         url: url,                    
-         data: {
-           'souslotid': souslotid       
-         },
-         success: function (data) {  
-           $("#id_categorie").html(data);  
-         }
-       }); 
-     });
-
-     $("#id_categorie").change(function () {
-       var url = $("#curativeForm").attr("data-equipement-url");  
-       var categorieid = $(this).val();   
-       $.ajax({                       
-         url: url,                    
-         data: {
-           'categorieid': categorieid       
-         },
-         success: function (data) {  
-           $("#id_equipement").html(data);  
-         }
-       }); 
-     });
- 
- 
- 
- 
- 
- </script>
 
 {% endblock footer %}

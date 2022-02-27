@@ -8,6 +8,10 @@ urlpatterns=[
 	path('form/',views.form,name='form'),
 	path('list/',views.listintervention,name='listintervention'),
 
+	#API
+	path('api/<int:pk>/getplanification/', views.getplanification, name="getplanification"),
+	path('api/<int:pk>/getsitetplanification', views.getsitetplanification, name="getsitetplanification"),
+
 	#Ajax
 	path('ajax/loadsouslot',views.loadsouslot,name='loadsouslot'),
 	path('ajax/loadcategorie',views.loadcategorie,name='loadcategorie'),
@@ -76,6 +80,11 @@ urlpatterns=[
 	path('sites/curative/<int:pk>/modifierfiche',views.fichecurative,name='fichecurative'),
 	### Maintenance Préventive
 	path('sites/<int:pk>/preventive',views.preventive,name='preventive'),
+	path('sites/preventive/<int:pk>/nouveau',views.newpreventive,name='newpreventive'),
+	path('sites/<int:pk1>/preventive/intervention/<int:pk2>',views.intervention,name='intervention'),
+	path('sites/preventive/<int:pk>/modifier',views.updateintervention,name='updateintervention'),
+	path('sites/<int:pk1>/preventive/<int:pk2>/modifier',views.preventiveupdate,name='preventiveupdate'),
+	path('sites/preventive/<int:pk>/supprimer',views.deletepreventive,name='deletepreventive'),
 	### Gestion de stock
 	path('sites/<int:pk>/stock',views.stock,name='stock'),
 	path('sites/stock/<int:pk>/noveau',views.newstock,name='newstock'),

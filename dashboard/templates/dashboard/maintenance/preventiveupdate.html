@@ -23,12 +23,12 @@
             </a>
           </li>
           <li class="nav-item flex-sm-fill text-sm-center">
-            <a class="nav-link active" href="{% url 'curative' site.id %}" >
+            <a class="nav-link " href="{% url 'curative' site.id %}" >
               <span><i class="mdi mdi-clipboard-alert"></i>  Maintenance Curative</span>
             </a>
           </li>
           <li class="nav-item flex-sm-fill text-sm-center">
-            <a class="nav-link" href="{% url 'preventive' site.id %}" >
+            <a class="nav-link active" href="{% url 'preventive' site.id %}" >
               <span><i class="mdi mdi-calendar "></i> Maintenance Préventive</span>
             </a>
           </li>
@@ -47,17 +47,17 @@
 <div class="page-breadcrumb border-bottom">
     <div class="row">
         <div class=" col-lg-3 col-md-4 col-xs-12 justify-content-start d-flex align-items-center ">
-            <h5 class="font-weight-medium text-uppercase mb-0">{{site.designation}}</h5>
+            <h5 class="font-weight-medium text-uppercase mb-0">{{planification.objet}}</h5>
         </div>
         <div class=" col-lg-9 col-md-8 col-xs-12 d-flex justify-content-start justify-content-md-end align-self-center " >
             <nav aria-label="breadcrumb" class="mt-2">
                 <ol class="breadcrumb mb-0 p-0">
                     <li class="breadcrumb-item">Sites</li>
                     <li class="breadcrumb-item active" aria-current="page">
-                      Maintenance Curative
+                      Maintenance Préventive
                     </li>
                     <li class="breadcrumb-item active" aria-current="page">
-                        Nouveau
+                        Modifier
                     </li>
                 </ol>
             </nav>
@@ -84,24 +84,12 @@
               </div>
               <div class="col-md-3">
                 <div class=" ">
-                  {{form.statut|as_crispy_field}}                
+                  {{form.zone|as_crispy_field}}                
                 </div>
               </div>
               <div class="col-md-8">
                   <div class="">
                     {{form.objet|as_crispy_field}}
-                  </div>
-              </div>
-            </div>
-            <div class="row pt-3">
-              <div class="col-md-6">
-                <div class="">
-                  {{form.intervenant|as_crispy_field}}
-                </div>
-              </div>
-              <div class="col-md-6">
-                  <div class="">
-                    {{form.zone|as_crispy_field}}
                   </div>
               </div>
             </div>
@@ -127,17 +115,15 @@
                   </div>
               </div>
             </div>
-            <div class="row pt-3">
-              <div class="col-md-6">
-                <div class=" ">
-                  {{form.imagear|as_crispy_field}}                
-                </div>
-              </div>
-            </div>
             <div class="form-actions">
               <div class="card-body">              
                 <div class="d-flex align-items-center p-4">
                   <div class="ms-auto">
+                    <a class="btn btn-danger rounded-pill px-4 float-right" href="{% url 'deletepreventive' planification.id %}">
+                      <div class="d-flex align-items-center">
+                        <i data-feather="trash-2" class="feather-sm me-1 fill-icon" ></i> Supprimer
+                      </div>
+                    </a>
                     <button type="submit" class="btn btn-success rounded-pill px-4 float-right" >
                       <div class="d-flex align-items-center">
                         <i data-feather="save" class="feather-sm me-1 fill-icon" ></i> Enregistrer

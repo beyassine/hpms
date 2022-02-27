@@ -5,7 +5,16 @@ from django.contrib import messages
 from users.models import *
 from users.forms import *
 from django.contrib.auth.decorators import login_required
+from datetime import datetime, date, timedelta
+import calendar
+from dateutil.relativedelta import relativedelta
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import parsers
+from .serializers import *
+import locale
 
+locale.setlocale(locale.LC_ALL, 'fr_FR')
 
 def home(request):
     return render(request,'dashboard/home.html')
@@ -16,6 +25,21 @@ def form(request):
 
 def listintervention(request):
     return render(request,'dashboard/list.html')
+
+# API
+@api_view(['GET'])
+def getplanification(request, pk):
+    planification = Planification.objects.get(id=pk)
+    serializer = PlanificationSerializer(planification)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getsitetplanification(request, pk):
+    ctx = {'day': request.GET.get('day', None)}
+    site = Site.objects.get(id=pk)
+    serializer = PlanificationSiteSerializer(site,context=ctx)
+    return Response(serializer.data)
+
 
 #Views
 
@@ -468,8 +492,6 @@ def updatecurative(request,pk):
             form.save()
             messages.success(request, f'Intervention modifiée avec succés')
             return redirect('curativedetail',pk=tache.id)
-        else:
-            print(form.errors)
     else:
         form=UpdateCurativeForm(site,instance=tache)
 
@@ -510,11 +532,125 @@ def fichecurative(request,pk):
 
 def preventive(request,pk):
     site=Site.objects.get(id=pk)
-    taches=Tache.objects.filter(site=site)
-
-    context={'site':site,'taches':taches}
+    interventions=Intervention.objects.filter(planification__site=site)
+    m = get_date(request.GET.get('month', None))
+    month = m.strftime("%Y-%m-%d")
+    mday='day='+ str(month)
+    tm = m.strftime("%m/%y")
+    strm=calendar.month_name[int(m.strftime("%m"))]
+    pm = (m - relativedelta(months=1)).strftime("%m/%y")
+    nm = (m + relativedelta(months=1)).strftime("%m/%y")
+    context={'site':site,'interventions':interventions,'site_id':site.id,'mday':mday,'strm':strm,
+    'this_month': month, 'm': m, 'tm': tm, 'pm': pm, 'nm': nm, 'prev_month': prev_month(m), 'next_month': next_month(m)}
 
     return render(request,'dashboard/maintenance/preventive.html',context)
+
+def newpreventive(request,pk):
+    site=Site.objects.get(id=pk)
+    if request.method=="POST":
+        form=PreventiveForm(site,request.POST)
+        if form.is_valid():
+            if form.instance.periodicite == 'Hebdomadaire':
+                delta=7
+            elif form.instance.periodicite == 'Mensuelle':
+                delta=30
+            elif form.instance.periodicite == 'Trimestrielle':
+                delta=90    
+            elif form.instance.periodicite == 'Semestrielle':
+                delta=180  
+            elif form.instance.periodicite == 'Semestrielle':
+                delta=365  
+            form.instance.site=site
+            tachedate=form.instance.datedebut
+            p=form.save()
+           
+            while tachedate <= form.instance.datefin :
+                Intervention.objects.create(planification=p,datecharge=tachedate)
+                tachedate += timedelta(days=delta)
+
+            messages.success(request, f'Nouvelle Planification ajoutée avec succés')
+            return redirect('preventive',pk=site.id)
+    else:
+        form=PreventiveForm(site)
+
+    context={'site':site,'form':form}
+    return render(request,'dashboard/maintenance/preventivenew.html',context)
+
+def preventiveupdate(request,pk1,pk2):
+    planification=Planification.objects.get(id=pk2)
+    site=planification.site
+    if request.method=="POST":
+        form=UpdatePreventiveForm(site,request.POST,instance=planification)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Planification modifiée avec succés')
+            return redirect('preventive',pk=site.id)
+        else:
+            print(form.errors)
+    else:
+        form=UpdatePreventiveForm(site,instance=planification)
+
+    context={'site':site,'form':form,'planification':planification}
+    return render(request,'dashboard/maintenance/preventiveupdate.html',context)
+
+def deletepreventive(request,pk):
+    planification=Planification.objects.get(id=pk)
+    site=planification.site
+
+    if request.method=="POST":
+        planification.delete()
+        messages.success(request, f'Planification supprimée avec succés')
+        return redirect('preventive',pk=site.id)    
+    
+    context={'site':site,'planification':planification}
+
+    return render(request,'dashboard/maintenance/planificationdelete.html',context)
+
+def intervention(request,pk1,pk2):
+    intervention=Intervention.objects.get(id=pk2)
+    planificatin=intervention.planification
+    site=intervention.planification.site
+    context={'intervention':intervention,'planificatin':planificatin,'site':site}
+
+    return render(request,'dashboard/maintenance/intervention.html',context)
+
+def updateintervention(request,pk):
+    intervention=Intervention.objects.get(id=pk)
+    site=intervention.planification.site
+    if request.method=="POST":
+        form=PreventiveFicheForm(site,request.POST,request.FILES,instance=intervention)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Intervention modifiée avec succés')
+            return redirect('intervention',pk1=site.id,pk2=intervention.id)
+    else:
+        form=PreventiveFicheForm(site,instance=intervention)
+    
+    context={'site':site,'intervention':intervention,'form':form}
+    return render(request,'dashboard/maintenance/interventionupdate.html',context)
+    
+
+
+def get_date(req_month):
+    if req_month:
+        year, month, day = (int(x) for x in req_month.split('-'))
+        return date(year, month, day)
+    return datetime.today().date()
+
+
+def prev_month(m):
+    prev_month = m - relativedelta(months=1)
+    month = 'month=' + str(prev_month.year) + '-' + \
+        str(prev_month.month) + '-' + str(prev_month.day)
+    return month
+
+
+def next_month(m):
+
+    next_month = m + relativedelta(months=1)
+    month = 'month=' + str(next_month.year) + '-' + \
+        str(next_month.month) + '-' + str(next_month.day)
+    return month
 
 
 ### Gestion Stock

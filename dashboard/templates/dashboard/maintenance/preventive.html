@@ -1,5 +1,16 @@
 {% extends "dashboard/base.html"%}
 {% load static%} 
+{% block header %} 
+<style>
+th:first-child, td:first-child
+{
+  position:sticky;
+  left:0px;
+ 
+}
+
+</style>
+{% endblock header %}
 {% block title %}
 <a class="nav-link waves-effect waves-dark"  href="{% url 'sites' %}" >                  
   <span class="d-none d-md-block text-uppercase ">{{site.designation}}</span>
@@ -88,7 +99,7 @@
                     role="button" aria-expanded="false" aria-controls="collapseExample" > 
                     <i class="ti-filter"></i>
               </a>              
-              <a class="btn btn-circle btn-success text-white " href="{% url 'newcurative' site.id %}" >
+              <a class="btn btn-circle btn-success text-white " href="{% url 'newpreventive' site.id %}" >
                 <i class="ti-plus"></i>
               </a>
             </div>
@@ -99,21 +110,41 @@
             </div>
           </div>
         </div>
-        <div class="p-3">
-          <div id="chart-heatmap"></div>
+        <div class="card-body">
+          <div class="d-flex align-items-center px-3 py-4">
+            <a id="aprevmonth" href="{% url 'preventive' site.id %}?{{ prev_month }}" class="  btn btn-outline-secondary" > {{ pm }}<br> << </a>            
+            <div class="ms-auto">
+              <a id="anextmonth" href="{% url 'preventive' site.id %}?{{ next_month }}" class="  btn btn-outline-secondary " >  {{ nm }} <br> >> </a>
+            </div>
+          </div>
+        </div>
+        <div class="p-3"> 
+          <div class="table-responsive-sm scrollable" style="height: 450px">
+            <table class="table mb-0  recent-table table-bordered" >
+              <thead >
+                <tr>                  
+                  <th class="bg-light" style="width: 35%;padding-right: 280px;border-bottom: none;"></th>         
+                  <th class="text-uppercase" colspan="31" style="width: 65%">{{strm}}</th>  
+                </tr>           
+              </thead>
+              <tbody id="tbody_planning" data-url="{% url 'getsitetplanification' site.id %}?{{ mday }}">                 
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
 </div>
-<!-- ============================================================== -->
+<!-- ============================================================= -->
 <!-- End Container fluid  -->
 <!-- ============================================================== -->
 <!-- ============================================================== -->
-
+{{site_id|json_script:"site_id" }}
+{{this_month|json_script:"month" }}
 {% endblock content %}
 
 {% block footer %}
+<script src="{% static 'dashboard/dist/js/moment-locale.js'%}"></script>
 <script src="{% static 'dashboard/dist/js/hpms/preventive.js' %}"></script>
 {% endblock footer %}
