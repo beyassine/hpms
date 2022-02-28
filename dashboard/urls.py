@@ -67,6 +67,11 @@ urlpatterns=[
 	path('administrateur/collaborateurs/nouveau',views.newcollab,name='newcollab'),
 	path('administrateur/collaborateurs/<int:pk>/modifier',views.updatecollab,name='updatecollab'),
 	path('administrateur/collaborateurs/<int:pk>/supprimer',views.deletecollab,name='deletecollab'),
+
+	###QR CODE
+	path('sites/<int:pk1>/equipementintervention/<int:pk2>',views.equipementintervention,name='equipementintervention'),
+	path('administrateur/sites/<int:pk>/getqr',views.getqr,name='getqr'),
+	path('sites/<int:pk1>/<int:pk2>/qr',views.QrPDF.as_view(),name='QrPDF'),
 	
 	## Sites
 	### Tableau de Bord

@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'crispy_forms',
+    'qr_code',
+    'xhtml2pdf',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

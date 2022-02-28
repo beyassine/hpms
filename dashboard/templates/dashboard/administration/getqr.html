@@ -1,0 +1,173 @@
+{% extends "dashboard/base.html"%}
+{% load static%} 
+{% load crispy_forms_tags %}
+
+{% block title %}
+<a class="nav-link waves-effect waves-dark"  href="{% url 'sites' %}" >                  
+  <span class="d-none d-md-block text-uppercase ">{{site.designation}}</span>
+</a>
+{% endblock title %}
+
+{% block content %}
+<!-- ============================================================== -->
+<!-- Tab Section -->
+<!-- ============================================================== -->
+<div class="col-md-12">         
+    <div class="card">
+      <div class="card-body">
+        <!-- Nav tabs -->
+        <ul class="nav nav-pills flex-column flex-sm-row" role="tablist" >
+            <li class="nav-item flex-sm-fill text-sm-center">
+              <a class="nav-link active " href="{% url 'sites' %}" >
+                <span><i class="mdi mdi-sitemap "></i>  Sites</span>
+              </a>
+            </li>
+            <li class="nav-item flex-sm-fill text-sm-center">
+              <a class="nav-link" href="{% url 'collabs' %}" >
+                <span><i class="mdi mdi-account-multiple "></i>  Collaborateurs</span>
+              </a>
+            </li>
+            <li class="nav-item flex-sm-fill text-sm-center">
+              <a class="nav-link " href="{% url 'lotequipements' %}" >
+                <span><i class="mdi mdi-settings"></i>  Equipements</span>
+              </a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+<!-- ============================================================== -->
+<!-- Bread crumb and right sidebar toggle -->
+<!-- ============================================================== -->
+<div class="page-breadcrumb border-bottom">
+    <div class="row">
+        <div class=" col-lg-3 col-md-4 col-xs-12 justify-content-start d-flex align-items-center ">
+            <h5 class="font-weight-medium text-uppercase mb-0">{{site.designation}}</h5>
+        </div>
+        <div class=" col-lg-9 col-md-8 col-xs-12 d-flex justify-content-start justify-content-md-end align-self-center " >
+            <nav aria-label="breadcrumb" class="mt-2">
+                <ol class="breadcrumb mb-0 p-0">
+                    <li class="breadcrumb-item">Administration</li>
+                    <li class="breadcrumb-item">Sites</li>
+                    <li class="breadcrumb-item">QR Code</li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                      Nouveau
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+  </div>
+<!-- ============================================================== -->
+<!-- End Bread crumb and right sidebar toggle -->
+<!-- ============================================================== -->
+<!-- Container fluid  -->
+<!-- ============================================================== -->
+<div class="page-content container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <form id="curativeForm" method="post" data-souslot-url="{% url 'loadsouslot' %}" data-categorie-url="{% url 'loadcategorie' %}" data-equipement-url="{% url 'loadequipement' %}">
+            {% csrf_token %}
+            <div class="row pt-3">
+              <div class="col-md-3">
+                <div class=" ">
+                  {{form.lot|as_crispy_field}}                
+                </div>
+              </div>
+              <div class="col-md-3">
+                  <div class="">
+                    {{form.souslot|as_crispy_field}}
+                  </div>
+              </div>
+              <div class="col-md-3">
+                <div class=" ">
+                  {{form.categorie|as_crispy_field}}                
+                </div>
+              </div>
+              <div class="col-md-3">
+                  <div class="">
+                    {{form.equipement|as_crispy_field}}
+                  </div>
+              </div>
+            </div>
+            <div class="form-actions">
+              <div class="card-body">              
+                <div class="d-flex align-items-center p-4">
+                  <div class="ms-auto">
+                    <button type="submit" class="btn btn-success rounded-pill px-4 float-right" >
+                      <div class="d-flex align-items-center">
+                        <i data-feather="save" class="feather-sm me-1 fill-icon" ></i> Télécharger QR
+                      </div>
+                    </button>
+                  </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- ============================================================== -->
+<!-- End Container fluid  -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+
+{% endblock content %}
+
+{% block footer %}
+
+<script type="text/javascript">
+
+  $("#id_lot").change(function () {
+       var url = $("#curativeForm").attr("data-souslot-url");  
+       var lotid = $(this).val();   
+       $.ajax({                       
+         url: url,                    
+         data: {
+           'lotid': lotid       
+         },
+         success: function (data) {  
+           $("#id_souslot").html(data);  
+         }
+       }); 
+     });
+ 
+     $("#id_souslot").change(function () {
+       var url = $("#curativeForm").attr("data-categorie-url");  
+       var souslotid = $(this).val();   
+       $.ajax({                       
+         url: url,                    
+         data: {
+           'souslotid': souslotid       
+         },
+         success: function (data) {  
+           $("#id_categorie").html(data);  
+         }
+       }); 
+     });
+
+     $("#id_categorie").change(function () {
+       var url = $("#curativeForm").attr("data-equipement-url");  
+       var categorieid = $(this).val();   
+       $.ajax({                       
+         url: url,                    
+         data: {
+           'categorieid': categorieid       
+         },
+         success: function (data) {  
+           $("#id_equipement").html(data);  
+         }
+       }); 
+     });
+ 
+ 
+ 
+ 
+ 
+ </script>
+
+{% endblock footer %}

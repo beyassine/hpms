@@ -1,0 +1,163 @@
+{% extends "dashboard/base.html"%}
+{% load static%} 
+{% block title %}
+{% endblock title %}
+{% block content %}
+<!-- Container fluid  -->
+<!-- ============================================================== -->
+<div class="page-content container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex align-items-center px-3 py-4 border-bottom">
+            <div>
+              <h4 class="card-title">{{equipement.designation}}</h4>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive ">
+            <table class="table table-sm table-borderless" width="100%" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <td  style="width: 14%" class=""> <a id="aprevmonth" href="{% url 'equipementintervention' site.id equipement.id %}?{{ prev_month }}" class="  btn btn-outline-secondary" > {{ pm }}<br> << </a></td>
+                        <td  style="width: 73%" style="vertical-align: middle;" class=" h4 font-weight-bold text-dark text-center"> <br>                            
+                            {% if tm == '01'%}Janvier{% endif %}
+                            {% if tm == '02'%}Février{% endif %}
+                            {% if tm == '03'%}Mars{% endif %}
+                            {% if tm == '04'%}Avril{% endif %}
+                            {% if tm == '05'%}Mai{% endif %}
+                            {% if tm == '06'%}Juin{% endif %}
+                            {% if tm == '07'%}Juillet{% endif %}
+                            {% if tm == '08'%}Aout{% endif %}
+                            {% if tm == '09'%}Septembre{% endif %}
+                            {% if tm == '10'%}Octobre{% endif %}
+                            {% if tm == '11'%}Novembre{% endif %}
+                            {% if tm == '12'%}Décembre{% endif %}
+                        </td>
+                        <td  style="width: 13%" class="" > <a id="anextmonth" href="{% url 'equipementintervention' site.id equipement.id %}?{{ next_month }}" class="  btn btn-outline-secondary " >  {{ nm }} <br> >> </a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div> 
+        <div class="table-responsive" >
+          <table class="table mb-0  recent-table">
+            <thead class="table-secondary">
+              <tr>
+                <th style="width: 85%" scope="col" class="border-0 fs-4 font-weight-medium ps-4" >
+                  Maintenance Préventive 
+                </th>
+                <th style="width: 15%" scope="col" class="border-0 fs-4 font-weight-medium ps-4" >
+                  </th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="ps-4">
+                      <h5 class="font-weight-medium mb-0">           
+                      </h5>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+              {% for intervention in interventions %}
+              <tr>
+                <td class="ps-4">
+                  <h5 class="font-weight-medium mb-0">
+                    Objet : {{intervention.planification.objet}}<br><br>
+                    Statut : 
+                    {% if intervention.statut == 'Enregistrée'  %}
+                    <span class="badge text-secondary font-weight-medium bg-light-secondary label-rouded " >Enregistrée</span><br><br>
+                    {% endif %}
+                    {% if intervention.statut == 'Pris en charge'  %}
+                    <span class="badge text-info font-weight-medium bg-light-info label-rouded " >En Charge</span><br><br>
+                    {% endif %}
+                    {% if intervention.statut == 'Travaux en cours'  %}
+                    <span class="badge text-warning font-weight-medium bg-light-warning label-rouded " >En Cours</span><br><br>
+                    {% endif %}
+                    {% if intervention.statut == 'Pending'  %}
+                    <span class="badge text-warning font-weight-medium bg-light-warning label-rouded " >En Cours</span><br><br>
+                    {% endif %}
+                    {% if intervention.statut == 'Résolue'  %}
+                    <span class="badge text-success font-weight-medium bg-light-success label-rouded " >Résolue</span><br><br>
+                    {% endif %}
+                    Date  : {{intervention.datecharge|date:"d/m/Y"}}                  
+                  </h5>
+                </td>
+                <td>
+                  <a href="{% url 'intervention' site.id intervention.id %}" class="text-info edit" >
+                    <i data-feather="eye" class="feather-sm fill-white" ></i>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}              
+            </tbody>
+          </table>
+          <table class="table mb-0  recent-table">
+            <thead class="table-secondary">
+              <tr>
+                <th style="width: 85%" scope="col" class="border-0 fs-4 font-weight-medium ps-4" >
+                  Maintenance Curative 
+                </th>
+                <th style="width: 15%" scope="col" class="border-0 fs-4 font-weight-medium ps-4" >
+                  </th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="ps-4">
+                      <h5 class="font-weight-medium mb-0">           
+                      </h5>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+              {% for tache in taches %}
+              <tr>
+                <td class="ps-4">
+                  <h5 class="font-weight-medium mb-0">
+                    Objet : {{tache.objet}} {{tache.objet}} <br><br>
+                    Statut :                     
+                    {% if tache.statut == 'Enregistrée'  %}
+                    <span class="badge text-secondary font-weight-medium bg-light-secondary label-rouded " >Enregistrée</span><br><br>
+                    {% endif %}
+                    {% if tache.statut == 'Pris en charge'  %}
+                    <span class="badge text-info font-weight-medium bg-light-info label-rouded " >En Charge</span><br><br>
+                    {% endif %}
+                    {% if tache.statut == 'Travaux en cours'  %}
+                    <span class="badge text-warning font-weight-medium bg-light-warning label-rouded " >En Cours</span><br><br>
+                    {% endif %}
+                    {% if tache.statut == 'Pending'  %}
+                    <span class="badge text-warning font-weight-medium bg-light-warning label-rouded " >En Cours</span><br><br>
+                    {% endif %}
+                    {% if tache.statut == 'Résolue'  %}
+                    <span class="badge text-success font-weight-medium bg-light-success label-rouded " >Résolue</span><br><br>
+                    {% endif %}
+                    Date  : {{tache.datecharge|date:"d/m/Y"}}                        
+                  </h5>
+                </td>
+                <td>
+                  <a href="{% url 'fichecurative' tache.id %}" class="text-info edit" >
+                    <i data-feather="eye" class="feather-sm fill-white" ></i>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}              
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- ============================================================== -->
+<!-- End Container fluid  -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+
+{% endblock content %}
+
+{% block footer %}
+
+{% endblock footer %}

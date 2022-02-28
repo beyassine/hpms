@@ -13,6 +13,14 @@ from rest_framework.response import Response
 from rest_framework import parsers
 from .serializers import *
 import locale
+from django.template.loader import render_to_string
+from io import BytesIO
+from django.template.loader import get_template
+from django.views import View
+from xhtml2pdf import pisa
+import os
+from django.conf import settings
+from django.http import HttpResponse,JsonResponse
 
 
 #locale.setlocale(locale.LC_ALL, 'fr_FR')
@@ -388,6 +396,67 @@ def deleteequipement(request,pk):
 
     return render(request,'dashboard/administration/equipementdelete.html',{'equipement':equipement})
 
+### QR CODE
+
+def equipementintervention(request,pk1,pk2):
+    site=Site.objects.get(id=pk1)
+    equipement=Equipement.objects.get(id=pk2)
+    m = get_date(request.GET.get('month', None))
+    month = m.strftime("%Y-%m-%d")
+    tm = m.strftime("%m")
+    pm = (m - relativedelta(months=1)).strftime("%m-%Y")
+    nm = (m + relativedelta(months=1)).strftime("%m-%Y")
+    date_obj = datetime.strptime(month, '%Y-%m-%d')
+    datefin = str(date_obj.year) + '-' + str(date_obj.month) + '-' + \
+            str(calendar.monthrange(date_obj.year, date_obj.month)[1])
+    datedebut = str(date_obj.year) + '-' + str(date_obj.month) + '-' + '01'
+   
+    taches=Tache.objects.filter(site=site,equipement=equipement,datecharge__date__lte=datefin, datecharge__date__gte=datedebut)
+    interventions=Intervention.objects.filter(planification__site=site,planification__equipement=equipement,datecharge__date__lte=datefin, datecharge__date__gte=datedebut)
+    
+    context={'site':site,'interventions':interventions,'taches':taches,'equipement':equipement,
+    'this_month': month, 'm': m, 'tm': tm, 'pm': pm, 'nm': nm, 'prev_month': prev_month(m), 'next_month': next_month(m)}
+
+    return render(request,'dashboard/administration/equipementintervention.html',context)
+
+
+def fetch_resources(uri, rel):
+    path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+
+    return path
+    
+def render_to_pdf(template_src, context_dict={},):
+	template = get_template(template_src)
+	html  = template.render(context_dict)
+	result = BytesIO()
+	
+	pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result,link_callback=fetch_resources)
+	if not pdf.err:
+		return HttpResponse(result.getvalue(), content_type='application/pdf')
+	return None
+
+
+#Opens up page as PDF
+class QrPDF(View):
+    def get(self,request,pk1,pk2, *args, **kwargs):
+        site=Site.objects.get(id=self.kwargs.get('pk1'))
+        equipement=Equipement.objects.get(id=self.kwargs.get('pk2'))
+        url=f'https://myhpms.herokuapp.com/sites/{site.id}/equipementintervention/{equipement.id}'
+        data={'site':site,'equipement':equipement,'url':url}
+        pdf = render_to_pdf('dashboard/administration/qr_template.html', data)
+        return HttpResponse(pdf, content_type='application/pdf')
+
+def getqr(request,pk):    
+    site=Site.objects.get(id=pk)
+    if request.method=="POST":
+        form=QrForm(site,request.POST)
+        if form.is_valid():
+            equipement=form.instance.equipement
+            return redirect('QrPDF',pk1=site.id,pk2=equipement.id)
+    else:
+        form=QrForm(site)
+
+    return render(request,'dashboard/administration/getqr.html',{'form':form,'site':site})
 ### Collaborateurs
 
 def collabs(request):
