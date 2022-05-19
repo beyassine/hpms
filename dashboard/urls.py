@@ -72,10 +72,17 @@ urlpatterns=[
 	path('sites/<int:pk1>/equipementintervention/<int:pk2>',views.equipementintervention,name='equipementintervention'),
 	path('administrateur/sites/<int:pk>/getqr',views.getqr,name='getqr'),
 	path('sites/<int:pk1>/<int:pk2>/qr',views.QrPDF.as_view(),name='QrPDF'),
+
+	###RondeQr CODE
+	path('administrateur/sites/<int:pk>/getrondeqr',views.getrondeqr,name='getrondeqr'),
+	path('sites/<int:pk1>/<int:pk2>/rondeqr',views.RondeQrPDF.as_view(),name='RondeQrPDF'),
 	
 	## Sites
 	### Tableau de Bord
 	path('sites/<int:pk>',views.sitehome,name='sitehome'),
+	### Rondes
+	path('sites/<int:pk>/ronde',views.ronde,name='ronde'),
+	path('sites/<int:pk1>/ronde/<int:pk2>/ajouter',views.newronde,name='rondenew'),
 	### Maintenance Curative
 	path('sites/<int:pk>/curative',views.curative,name='curative'),
 	path('sites/curative/<int:pk>/nouveau',views.newcurative,name='newcurative'),

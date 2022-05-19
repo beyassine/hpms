@@ -78,6 +78,14 @@ class Mouvement(models.Model):
 	mouvement=models.IntegerField(choices=mvmnt,default='1')
 	quantite=models.IntegerField(default=0,verbose_name='Quantité')
 
+# Ronde
+
+class Ronde(models.Model):
+	#Site
+	site=models.ForeignKey(Site, on_delete=models.CASCADE,verbose_name='Site',default='')
+	equipement=models.ForeignKey(Equipement,on_delete=models.SET_NULL,null=True,verbose_name='Equipement',default='')
+	datecreated=models.DateTimeField(default=timezone.now)
+	intervenant=models.ForeignKey(User,on_delete=models.SET_NULL,null=True,verbose_name='ronde_intervenant')
 
 
 # Tache
@@ -100,7 +108,7 @@ class Tache(models.Model):
 	statut=models.CharField(max_length=100,choices=statut_choices,default='Pris en charge')
 	objet=models.CharField(max_length=1000,verbose_name='Objet',default='')	
 	#Intervenant
-	intervenant=models.ForeignKey(User,on_delete=models.SET_NULL,null=True ,related_name='Intervenant')
+	intervenant=models.ManyToManyField(User,related_name='Intervenant')
 	#Site
 	site=models.ForeignKey(Site, on_delete=models.CASCADE,verbose_name='Site',default='')
 	zone=models.ForeignKey(Zone,on_delete=models.SET_NULL,null=True, verbose_name='Zone',default='')
@@ -182,7 +190,7 @@ class Intervention(models.Model):
 	
 	statut=models.CharField(max_length=100,choices=statut_choices,default='Enregistrée')
 	planification=models.ForeignKey(Planification, on_delete=models.CASCADE,verbose_name='Planification')
-	intervenant=models.ForeignKey(User,on_delete=models.SET_NULL,null=True ,related_name='Intervenants')
+	intervenant=models.ManyToManyField(User,related_name='Intervenants')
 	# date Prise en charge
 	datecharge=models.DateTimeField(default=timezone.now)
 	#date début travaux

@@ -1,0 +1,172 @@
+{% extends "dashboard/base.html"%}
+{% load static%} 
+{% block title %}
+{% endblock title %}
+{% block content %}
+<!-- ============================================================== -->
+<!-- Tab Section -->
+<!-- ============================================================== -->
+<div class="col-md-12">         
+    <div class="card">
+      <div class="card-body">
+        <!-- Nav tabs -->
+        <ul class="nav nav-pills flex-column flex-sm-row" role="tablist" >
+          <li class="nav-item flex-sm-fill text-sm-center">
+            <a class="nav-link " href="{% url 'sitehome' site.id %}" >
+              <span><i class="mdi mdi-view-dashboard"></i> Tableau de Bord</span>
+            </a>
+          </li>
+          <li class="nav-item flex-sm-fill text-sm-center">
+            <a class="nav-link " href="{% url 'curative' site.id %}" >
+              <span><i class="mdi mdi-clipboard-alert"></i>  Maintenance Curative</span>
+            </a>
+          </li>
+          <li class="nav-item flex-sm-fill text-sm-center">
+            <a class="nav-link" href="{% url 'preventive' site.id %}" >
+              <span><i class="mdi mdi-calendar "></i> Maintenance Préventive</span>
+            </a>
+          </li>          
+          <li class="nav-item flex-sm-fill text-sm-center">
+            <a class="nav-link active" href="{% url 'ronde' site.id %}" >
+              <span><i class="mdi mdi-checkbox-marked-circle-outline "></i> Ronde Maintenance</span>
+            </a>
+          </li>
+          <li class="nav-item flex-sm-fill text-sm-center">
+            <a class="nav-link" href="{% url 'stock' site.id %}" >
+              <span><i class="mdi mdi-layers"></i>  Gestion Stock</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- ============================================================== -->
+  <!-- Bread crumb and right sidebar toggle -->
+  <!-- ============================================================== -->
+  <div class="page-breadcrumb border-bottom">
+    <div class="row">
+        <div class=" col-lg-3 col-md-4 col-xs-12 justify-content-start d-flex align-items-center ">
+            <h5 class="font-weight-medium text-uppercase mb-0">{{site.designation}}</h5>
+        </div>
+        <div class=" col-lg-9 col-md-8 col-xs-12 d-flex justify-content-start justify-content-md-end align-self-center " >
+            <nav aria-label="breadcrumb" class="mt-2">
+                <ol class="breadcrumb mb-0 p-0">
+                    <li class="breadcrumb-item">Sites</li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                      Ronde Maintenance
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+  </div>
+  <!-- ============================================================== -->
+  <!-- End Bread crumb and right sidebar toggle -->
+  <!-- ============================================================== -->
+  <!-- Container fluid  -->
+  <!-- ============================================================== -->
+<!-- Container fluid  -->
+<!-- ============================================================== -->
+<div class="page-content container-fluid">  
+{% if messages %}
+{% for message in messages%}
+  <div class="alert alert-{{ message.tags}} alert-dismissible fade show" role="alert">
+    {{message}}
+    <button type="button" class="btn-close text-white" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+{% endfor %}   
+{%endif%}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex align-items-center px-3 py-4 border-bottom">
+            <div>
+              <h4 class="card-title">{{site.designation}}</h4>              
+            </div>            
+            <div class="ms-auto">
+                <a class="btn btn-circle btn-secondary text-white" data-bs-toggle="collapse" href="#collapseExample"
+                      role="button" aria-expanded="false" aria-controls="collapseExample" > 
+                      <i class="ti-filter"></i>
+                </a>          
+              </div>
+          </div>          
+          <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+              <form id="curativeFilter" method="get" data-souslot-url="{% url 'loadsouslot' %}" data-categorie-url="{% url 'loadcategorie' %}" data-equipement-url="{% url 'loadequipement' %}">
+                {% csrf_token %}
+                <div class="row pt-3">
+                  <div class="col-md-6">
+                    <div class=" ">
+                      <h6>Intervenant</h6> 
+                      {{filter.form.intervenant}}                
+                    </div>
+                  </div>           
+                </div>
+                <div class="form-actions">
+                  <div class="card-body">              
+                    <div class="d-flex align-items-center p-4">
+                      <div class="ms-auto">
+                        <button type="submit" class="btn btn-secondary rounded-pill px-4 float-right" >
+                          <div class="d-flex align-items-center">
+                            Filtrer
+                          </div>
+                        </button>
+                      </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive ">
+            <table class="table table-sm table-borderless" width="100%" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <td  style="width: 14%" class=""> <a id="aprevmonth" href="{% url 'ronde' site.id %}?{{ prev_day }}" class="  btn btn-outline-secondary" ><< </a></td>
+                        <td  style="width: 73%" style="vertical-align: middle;" class=" h4 font-weight-bold text-dark text-center"> <br>                            
+                            {{td}}
+                        </td>
+                        <td  style="width: 13%" class="" > <a id="anextmonth" href="{% url 'ronde' site.id %}?{{ next_day }}" class="  btn btn-outline-secondary " >>> </a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>        
+      </div>
+      
+      <div class="p-3">          
+        <div class="table-responsive scrollable" style="height: 450px">
+          <table class="table mb-0  recent-table table-hover">
+            <thead class="bg-light">
+              <tr>               
+                <th style="width: 40%">Intervenant</th>                  
+                <th style="width: 40%">Equipement</th>  
+                <th style="width: 20%">Heure</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for ronde in rondes %}
+              <tr>
+                <td class="txt-oflo">{{ronde.intervenant}} {{ronde.intervenant.last_name}} </td> 
+                <td class="txt-oflo">{{ronde.equipement.designation}}</td>
+                <td><span class="txt-oflo">{{ronde.datecreated|date:"H:i"}}</span></td>             
+              </tr>
+              {% endfor %}              
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- ============================================================== -->
+<!-- End Container fluid  -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+
+{% endblock content %}
+
+{% block footer %}
+
+{% endblock footer %}

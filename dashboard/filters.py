@@ -39,3 +39,17 @@ class CurativeFliter(django_filters.FilterSet):
 		self.filters['zone'].field.widget.attrs.update({'class': 'form-control'})
 		self.filters['zone'].field.widget.attrs.update({'label': 'Zone'})
 		self.filters['lot'].field.widget.attrs.update({'class': 'form-control'})
+
+
+class RondeFliter(django_filters.FilterSet):
+	
+
+	class Meta:
+		model=Ronde
+		fields=('intervenant',)
+	
+	def __init__(self,site,*args, **kwargs):
+		super(RondeFliter, self).__init__(*args, **kwargs)
+		
+		self.filters['intervenant'].queryset=Site.objects.get(id=site).intervenantsite.all()
+		self.filters['intervenant'].field.widget.attrs.update({'class': 'form-control'})

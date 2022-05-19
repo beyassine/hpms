@@ -457,6 +457,31 @@ def getqr(request,pk):
         form=QrForm(site)
 
     return render(request,'dashboard/administration/getqr.html',{'form':form,'site':site})
+
+#Rondes QR
+
+class RondeQrPDF(View):
+    def get(self,request,pk1,pk2, *args, **kwargs):
+        site=Site.objects.get(id=self.kwargs.get('pk1'))
+        equipement=Equipement.objects.get(id=self.kwargs.get('pk2'))
+        url=f'https://myhpms.herokuapp.com/sites/{site.id}/ronde/{equipement.id}/ajouter'
+        data={'site':site,'equipement':equipement,'url':url}
+        pdf = render_to_pdf('dashboard/administration/rondeqr_template.html', data)
+        return HttpResponse(pdf, content_type='application/pdf')
+
+def getrondeqr(request,pk):    
+    site=Site.objects.get(id=pk)
+    if request.method=="POST":
+        form=RondeQrForm(site,request.POST)
+        if form.is_valid():
+            equipement=form.instance.equipement
+            return redirect('RondeQrPDF',pk1=site.id,pk2=equipement.id)
+    else:
+        form=RondeQrForm(site)
+
+    return render(request,'dashboard/administration/getrondeqr.html',{'form':form,'site':site})
+
+
 ### Collaborateurs
 
 def collabs(request):
@@ -520,6 +545,33 @@ def sitehome(request,pk):
     context={'site':site}
     return render(request,'dashboard/maintenance/sitehome.html',context)
 
+## Rondes 
+def ronde(request,pk):
+    site=Site.objects.get(id=pk)
+    d = get_date(request.GET.get('day', None))
+    day = d.strftime("%Y-%m-%d")
+
+    td = d.strftime("%d/%m/%Y")
+
+    rondes=Ronde.objects.filter(site=site,datecreated__date=day).order_by('-id')    
+    filter=RondeFliter(site.id,request.GET,request=request,queryset=rondes)
+    frondes=filter.qs
+    context={'site':site,'rondes':frondes,'td':td,'prev_day':prev_day(d),'next_day':next_day(d),'filter':filter}
+
+    return render(request,'dashboard/ronde/ronde.html',context)
+
+def newronde(request,pk1,pk2):
+    site=Site.objects.get(id=pk1)
+    equipement=Equipement.objects.get(id=pk2)
+
+    if request.method=="POST":
+        Ronde.objects.create(site=site,equipement=equipement,intervenant=User.objects.get(username='admin'))
+        messages.success(request, f'Ronde ajoutée avec succés')
+        return redirect('ronde',pk=site.id)    
+    
+    context={'site':site,'equipement':equipement}
+
+    return render(request,'dashboard/ronde/rondenew.html',context)
 
 ### Maintenance Curative
 
@@ -721,6 +773,18 @@ def next_month(m):
     month = 'month=' + str(next_month.year) + '-' + \
         str(next_month.month) + '-' + str(next_month.day)
     return month
+
+def prev_day(d):  
+
+    prev_day= d - timedelta(days=1)
+    day='day=' + str(prev_day.year) + '-' + str(prev_day.month)+ '-' + str(prev_day.day)
+    return day
+
+def next_day(d):
+
+    next_day = d + timedelta(days=1)
+    day='day=' + str(next_day.year) + '-' + str(next_day.month)+ '-' + str(next_day.day)
+    return day
 
 
 ### Gestion Stock
