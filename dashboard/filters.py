@@ -5,7 +5,7 @@ from django.utils import timezone
 
 
 
-class CurativeFliter(django_filters.FilterSet):
+class CurativeFilter(django_filters.FilterSet):
 
 	criticite_choices=(('c1','C1'),('c2','C2'),('c3','C3'))
 	statut_choices=(('Enregistrée','Enregistrée'),
@@ -33,7 +33,7 @@ class CurativeFliter(django_filters.FilterSet):
 		fields=('date_debut','date_fin','criticite','statut','lot','zone','souslot','categorie','equipement',)
 	
 	def __init__(self,site,*args, **kwargs):
-		super(CurativeFliter, self).__init__(*args, **kwargs)
+		super(CurativeFilter, self).__init__(*args, **kwargs)
 
 		self.filters['zone'].queryset=Zone.objects.filter(site__id=site)
 		self.filters['zone'].field.widget.attrs.update({'class': 'form-control'})
@@ -41,15 +41,24 @@ class CurativeFliter(django_filters.FilterSet):
 		self.filters['lot'].field.widget.attrs.update({'class': 'form-control'})
 
 
-class RondeFliter(django_filters.FilterSet):
-	
+class RondeFilter(django_filters.FilterSet):
+
+	souslot=django_filters.ChoiceFilter(field_name="souslot",empty_label='------',widget=forms.Select(attrs={'class':'form-control',}),label='SousLot',)
+	categorie=django_filters.ChoiceFilter(field_name="categorie",empty_label='------',widget=forms.Select(attrs={'class':'form-control',}),label='Categorie',)
+	equipement=django_filters.ChoiceFilter(field_name="equipement",empty_label='------',widget=forms.Select(attrs={'class':'form-control',}),label='Equipement',)
 
 	class Meta:
 		model=Ronde
-		fields=('intervenant',)
+		fields=('intervenant','zone','lot','souslot','categorie','equipement',)
 	
 	def __init__(self,site,*args, **kwargs):
-		super(RondeFliter, self).__init__(*args, **kwargs)
-		
+		super(RondeFilter, self).__init__(*args, **kwargs)
+
+		self.filters['zone'].queryset=Zone.objects.filter(site__id=site)		
 		self.filters['intervenant'].queryset=Site.objects.get(id=site).intervenantsite.all()
 		self.filters['intervenant'].field.widget.attrs.update({'class': 'form-control'})
+		self.filters['zone'].field.widget.attrs.update({'class': 'form-control'})
+		self.filters['lot'].field.widget.attrs.update({'class': 'form-control'})
+		self.filters['souslot'].field.widget.attrs.update({'class': 'form-control'})
+		self.filters['categorie'].field.widget.attrs.update({'class': 'form-control'})
+		self.filters['equipement'].field.widget.attrs.update({'class': 'form-control'})

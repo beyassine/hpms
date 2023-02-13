@@ -7,7 +7,7 @@ function education_fields() {
   divtest.setAttribute("class", "mb-3 removeclass" + room);
   var rdiv = "removeclass" + room;
   divtest.innerHTML =
-    '<form class="row"><div class="col-sm-3"><div class="form-group"><input type="text" class="form-control" id="Schoolname" name="Schoolname" placeholder="School Name"></div></div><div class="col-sm-2"> <div class="form-group"> <input type="text" class="form-control" id="Age" name="Age" placeholder="Age"> </div></div><div class="col-sm-2"> <div class="form-group"> <input type="text" class="form-control" id="Degree" name="Degree" placeholder="Degree"> </div></div><div class="col-sm-3"> <div class="form-group"> <select class="form-control" id="educationDate" name="educationDate"> <option>Date</option> <option value="2015">2015</option> <option value="2016">2016</option> <option value="2017">2017</option> <option value="2018">2018</option> </select> </div></div><div class="col-sm-2"> <div class="form-group"> <button class="btn btn-danger" type="button" onclick="remove_education_fields(' +
+    '<div class="row" ><div class="col-md-5"><div class="mb-3" ><select class="form-control "><option value="">-------</option><option value="">Article 1</option><option value="">Article 2</option><option value="">Article 3</option></select></div></div><div class="col-md-5"><div class="mb-3"><input type="text" class="form-control" id="Schoolname" name="Schoolname" placeholder="Quantité" /></div></div> <div class="col-sm-2"> <div class="form-group"> <button class="btn btn-sm btn-text text-danger" type="button" onclick="remove_education_fields(' +
     room +
     ');"> <i class="fa fa-minus"></i> </button> </div></div></form>';
 

@@ -2,31 +2,70 @@
 {% load static%} 
 {% block title %}
 <a class="nav-link waves-effect waves-dark"  href="{% url 'sites' %}" >                  
-  <span class="d-none d-md-block">ADMINISTRATION</span>
+  <span class="d-none d-md-block text-uppercase">{{site.designation}}</span>
 </a>
 {% endblock title %}
 {% block content %}
 <!-- ============================================================== -->
 <!-- Tab Section -->
 <!-- ============================================================== -->
-<div class="col-md-12">         
+<div class="col-md-12">
   <div class="card">
     <div class="card-body">
       <!-- Nav tabs -->
-      <ul class="nav nav-pills flex-column flex-sm-row" role="tablist" >
+      <ul class="nav nav-pills flex-column flex-sm-row" role="tablist">
         <li class="nav-item flex-sm-fill text-sm-center">
-          <a class="nav-link active" href="{% url 'sites' %}" >
-            <span><i class="mdi mdi-sitemap "></i>  Sites</span>
+          <a class="nav-link" href="{% url 'sitehome' site.id %}">
+            <span><i data-feather="grid" class="feather-sm fill-white mb-1" ></i> Tableau de Bord</span>
           </a>
         </li>
         <li class="nav-item flex-sm-fill text-sm-center">
-          <a class="nav-link" href="{% url 'collabs' %}" >
-            <span><i class="mdi mdi-account-multiple "></i>  Collaborateurs</span>
+          <div class="btn-group btn-group-sm" role="group">
+            <a
+              id="btnGroupDrop1"
+              type="button"
+              class="nav-link dropdown-toggle"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <span><i data-feather="check-square" class="feather-sm fill-white mb-1" ></i> Maintenance Site </span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+              <a
+                class="dropdown-item text-primary"
+                href="{% url 'curative' site.id %}"
+              >
+                <span>Maintenance Curative</span>
+              </a>
+              <a
+                class="dropdown-item text-primary"
+                href="{% url 'preventive' site.id %}"
+              >
+                <span>Maintenance Préventive</span>
+              </a>
+              <a
+                class="dropdown-item text-primary"
+                href="{% url 'cout' site.id %}"
+              >
+                <span>Suivi Financier</span>
+              </a>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item flex-sm-fill text-sm-center">
+          <a class="nav-link " href="{% url 'ronde' site.id %}">
+            <span><i data-feather="check-circle" class="feather-sm fill-white mb-1" ></i> Rondes Techniques</span>
+          </a>
+        </li>      
+        <li class="nav-item flex-sm-fill text-sm-center">
+          <a class="nav-link " href="{% url 'di' site.id %}">
+            <span><i data-feather="edit" class="feather-sm fill-white mb-1" ></i> Demande Intervention</span>
           </a>
         </li>
         <li class="nav-item flex-sm-fill text-sm-center">
-          <a class="nav-link" href="{% url 'lotequipements' %}" >
-            <span><i class="mdi mdi-settings"></i>  Equipements</span>
+          <a class="nav-link active" href="{% url 'detailsite' site.id %}">
+            <span><i data-feather="sliders" class="feather-sm fill-white mb-1" ></i> Administration</span>
           </a>
         </li>
       </ul>
@@ -44,13 +83,7 @@
       <div class=" col-lg-9 col-md-8 col-xs-12 d-flex justify-content-start justify-content-md-end align-self-center " >
           <nav aria-label="breadcrumb" class="mt-2">
               <ol class="breadcrumb mb-0 p-0">
-                  <li class="breadcrumb-item">Administration</li>
-                  <li class="breadcrumb-item " aria-current="page">
-                    Sites
-                  </li>
-                  <li class="breadcrumb-item active" aria-current="page">
-                    Informations Générales
-                  </li>
+                  <li class="breadcrumb-item active">Administration</li>
               </ol>
           </nav>
       </div>
@@ -70,7 +103,7 @@
     </div>
   {% endfor %}
 {% endif %}
-<div class="row">
+<div class="card-group"> 
   <div class="col-md-4">
     <div class="card">
       <div class="card-body">
@@ -221,7 +254,7 @@
 </div>
 
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-12">
     <div class="card">
       <div class="card-body">
         <div class="d-flex align-items-center px-3 py-4 border-bottom">
@@ -239,10 +272,10 @@
         <table class="table no-wrap user-table mb-0">
           <thead class="table-light">
             <tr>
-              <th  style="width: 50%" scope="col" class="border-0 fs-4 font-weight-medium ps-4" >
+              <th  style="width: 40%" scope="col" class="border-0 fs-4 font-weight-medium ps-4" >
                 Désignation 
               </th>
-              <th  style="width: 40%" scope="col" class="border-0 fs-4 font-weight-medium" >
+              <th  style="width: 30%" scope="col" class="border-0 fs-4 font-weight-medium" >
                 Libellé
               </th>
               <th  style="width: 10%" scope="col" class="border-0 fs-4 font-weight-medium" >
@@ -276,7 +309,216 @@
       </div>
     </div>
   </div>
-  <div class="col-md-6">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex align-items-center px-3 py-4 border-bottom">
+          <div>
+            <h4 class="card-title">Equipements</h4>
+          </div>          
+          <div class="ms-auto">
+            <a class="btn btn-circle btn-success text-white " href="{% url 'newsiteequipement' site.id %}" >
+              <i class="ti-plus"></i>
+            </a>
+          </div>
+        </div>
+      </div>      
+      <div class="table-responsive" >
+        <table class="table no-wrap user-table mb-0 text-center">
+          <thead class="table-light">
+            <tr>
+              <th  style="width: 20%" scope="col" class="border-0 fs-4 font-weight-medium ps-4" >
+                Lot 
+              </th>  
+              <th  style="width: 20%" scope="col" class="border-0 fs-4 font-weight-medium ps-4" >
+                Équipement 
+              </th> 
+              <th  style="width: 20%" scope="col" class="border-0 fs-4 font-weight-medium ps-4" >
+                Zone 
+              </th> 
+              <th  style="width: 10%" scope="col" class="border-0 fs-4 font-weight-medium ps-4" >
+                Gamme Maintenance 
+              </th>             
+              <th  style="width: 10%" scope="col" class="border-0 fs-4 font-weight-medium" >
+                Code QR
+              </th>
+              <th  style="width: 20%" scope="col" class="border-0 fs-4 font-weight-medium" >
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for equipement in equipements %}
+            <tr>
+              <td class="ps-4">
+                <h5 class="font-weight-medium mb-0">
+                  {{equipement.lot}}
+                </h5>
+              </td>
+              <td class="ps-4">
+                <h5 class="font-weight-medium mb-0">
+                  {{equipement.equipement.designation}}
+                </h5>
+              </td>           
+              <td class="ps-4">
+                <h5 class="font-weight-medium mb-0">
+                  {{equipement.zone}}
+                </h5>
+              </td>
+              <td>                
+                <a
+                href=""
+                class="btn btn-sm btn-text text-secondary text-center"
+              >
+                <i
+                  data-feather="file-text"
+                  class="feather-sm fill-white text-dark"
+                ></i>
+              </a>
+              </td>
+              <td>
+                <a href="{% url 'QrPDF' site.id equipement.id %}"class="text-dark delete ms-2" >
+                  <i class="mdi mdi-qrcode" ></i>
+                </a>
+              </td>
+              <td>
+                <a href="" class="text-dark delete ms-2" >
+                  <i data-feather="edit" class="feather-sm fill-white" ></i>
+                </a>
+                <a href=""class="text-danger delete ms-2" >
+                  <i data-feather="trash-2" class="feather-sm fill-white" ></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}              
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex align-items-center px-3 py-4 border-bottom">
+          <div>
+            <h4 class="card-title">Gestion Stock</h4>
+          </div>          
+          <div class="ms-auto">
+            <a class="btn btn-circle btn-success text-white " href="{% url 'newsiteequipement' site.id %}" >
+              <i class="ti-plus"></i>
+            </a>
+          </div>
+        </div>
+      </div>      
+      <div class="table-responsive" >
+        <table class="table no-wrap user-table mb-0 text-center">
+          <thead class="table-light">
+            <tr>
+              <th  style="width: 20%" scope="col" class="border-0 fs-4 font-weight-medium ps-4" >
+                Article 
+              </th>  
+              <th  style="width: 20%" scope="col" class="border-0 fs-4 font-weight-medium ps-4" >
+                Libellé 
+              </th> 
+              <th  style="width: 20%" scope="col" class="border-0 fs-4 font-weight-medium ps-4" >
+                Stock 
+              </th> 
+              <th  style="width: 20%" scope="col" class="border-0 fs-4 font-weight-medium ps-4" >
+                Mouvements
+              </th>  
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ps-4">
+                <h5 class="font-weight-medium mb-0">
+                  Article 1
+                </h5>
+              </td>
+              <td class="ps-4">
+                <h5 class="font-weight-medium mb-0">
+                  Ar-1
+                </h5>
+              </td>              
+              <td class="ps-4">
+                <h5 class="font-weight-medium mb-0">
+                  120
+                </h5>
+              </td>
+              <td>                
+                <a
+                href=""
+                class="btn btn-sm btn-text text-secondary text-center"
+              >
+                <i
+                  data-feather="layers"
+                  class="feather-sm fill-white text-dark"
+                ></i>
+              </a>
+              </td>
+            </tr>              
+            <tr>
+              <td class="ps-4">
+                <h5 class="font-weight-medium mb-0">
+                  Article 2
+                </h5>
+              </td>
+              <td class="ps-4">
+                <h5 class="font-weight-medium mb-0">
+                  Ar-2
+                </h5>
+              </td>              
+              <td class="ps-4">
+                <h5 class="font-weight-medium mb-0">
+                  10
+                </h5>
+              </td>
+              <td>                
+                <a
+                href=""
+                class="btn btn-sm btn-text text-secondary text-center"
+              >
+                <i
+                  data-feather="layers"
+                  class="feather-sm fill-white text-dark"
+                ></i>
+              </a>
+              </td>
+            </tr>              
+            <tr>
+              <td class="ps-4">
+                <h5 class="font-weight-medium mb-0">
+                  Article 3
+                </h5>
+              </td>
+              <td class="ps-4">
+                <h5 class="font-weight-medium mb-0">
+                  Ar-3
+                </h5>
+              </td>              
+              <td class="ps-4">
+                <h5 class="font-weight-medium mb-0">
+                  1
+                </h5>
+              </td>
+              <td>                
+                <a
+                href=""
+                class="btn btn-sm btn-text text-secondary text-center"
+              >
+                <i
+                  data-feather="layers"
+                  class="feather-sm fill-white text-dark"
+                ></i>
+              </a>
+              </td>
+            </tr>             
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="col-md-6">
     <div class="card">
       <div class="card-body">
         <div class="d-flex align-items-center px-3 py-4 border-bottom">
@@ -316,7 +558,7 @@
         </table>
       </div>
     </div>
-  </div>
+  </div> -->
 </div>
 
 </div>

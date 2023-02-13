@@ -16,7 +16,7 @@ class PlanificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Planification
-        fields = ('id','objet','periodicite','interventions')
+        fields = ('id','objet','periodicite','equipement','zone','interventions')
 
     def get_interventions(self,obj):
         dd = self.context['dd']
@@ -24,6 +24,12 @@ class PlanificationSerializer(serializers.ModelSerializer):
         interventions=Intervention.objects.filter(planification=obj.id,datecharge__date__lte=df, datecharge__date__gte=dd)
         ints=InterventionSerializer(interventions,many=True)
         return ints.data
+    
+    def to_representation(self, instance):
+        rep = super(PlanificationSerializer, self).to_representation(instance)
+        rep['zone'] = instance.zone.designation
+        rep['equipement'] = instance.equipement.designation
+        return rep
 
 class PlanificationSiteSerializer(serializers.ModelSerializer):
     planifications=serializers.SerializerMethodField()
@@ -33,8 +39,12 @@ class PlanificationSiteSerializer(serializers.ModelSerializer):
         fields = ('id','designation','planifications')
 
     def get_planifications(self,obj):
-        d = self.context['day']
-        date_obj = datetime.strptime(d, '%Y-%m-%d')
+        d = self.context['week']
+        d=d.strftime("%Y-%m-%d")
+        date_obj = datetime.strptime(d, '%Y-%m-%d')        
+        calendar_week=date_obj.isocalendar()[1]
+        r=f'{date_obj.year}-W{calendar_week} w1'
+        r = datetime.strptime(r , "%Y-W%W w%w")
         datefin = str(date_obj.year) + '-' + str(date_obj.month) + '-' + \
             str(calendar.monthrange(date_obj.year, date_obj.month)[1])
         datedebut = str(date_obj.year) + '-' + str(date_obj.month) + '-' + '01'

@@ -54,12 +54,12 @@
           </div>
         </li>
         <li class="nav-item flex-sm-fill text-sm-center">
-          <a class="nav-link active" href="{% url 'ronde' site.id %}">
+          <a class="nav-link " href="{% url 'ronde' site.id %}">
             <span><i data-feather="check-circle" class="feather-sm fill-white mb-1" ></i> Rondes Techniques</span>
           </a>
         </li>      
         <li class="nav-item flex-sm-fill text-sm-center">
-          <a class="nav-link" href="{% url 'di' site.id %}">
+          <a class="nav-link active" href="{% url 'di' site.id %}">
             <span><i data-feather="edit" class="feather-sm fill-white mb-1" ></i> Demande Intervention</span>
           </a>
         </li>
@@ -91,7 +91,7 @@
         <div class=" col-lg-9 col-md-8 col-xs-12 d-flex justify-content-start justify-content-md-end align-self-center " >
             <nav aria-label="breadcrumb" class="mt-2">
                 <ol class="breadcrumb mb-0 p-0">
-                    <li class="breadcrumb-item active">Rondes Techniques</li>
+                    <li class="breadcrumb-item active">Demandes Intervention</li>
             </nav>
         </div>
     </div>
@@ -104,42 +104,28 @@
 <!-- Container fluid  -->
 <!-- ============================================================== -->
 <div class="page-content container-fluid">  
-  {% if messages %}
-  {% for message in messages%}
-    <div class="alert alert-{{ message.tags}} alert-dismissible fade show" role="alert">
-      {{message}}
-      <button type="button" class="btn-close text-white" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  {% endfor %}   
-  {%endif%}
-
-  <div class="card">
-    <div class="card-header text-center">
-    <h5>
-        <a  id="aprevmonth" href="{% url 'ronde' site.id %}?{{ prev_day }}" class="button btn-text text-dark" >
-          <i data-feather="chevrons-left" class="feather-sm fill-white me-2" ></i>
-        </a>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{td}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <a id="anextmonth" href="{% url 'ronde' site.id %}?{{ next_day }}" class="button btn-text text-dark" >
-          <i data-feather="chevrons-right" class="feather-sm fill-white me-2" ></i>
-        </a>
-      </h5>
-    </div>
-  </div>   
+{% if messages %}
+{% for message in messages%}
+  <div class="alert alert-{{ message.tags}} alert-dismissible fade show" role="alert">
+    {{message}}
+    <button type="button" class="btn-close text-white" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+{% endfor %}   
+{%endif%}
   <div class="row">
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
           <div class="d-flex align-items-center px-3 py-4 border-bottom">
             <div>
-              <h4 class="card-title">Rondes Techniques</h4>              
+              <h4 class="card-title">Demande Intervention</h4>              
             </div>            
             <div class="ms-auto">
                 <a class="btn btn-circle btn-secondary text-white" data-bs-toggle="collapse" href="#collapseExample"
                       role="button" aria-expanded="false" aria-controls="collapseExample" > 
                       <i class="ti-filter"></i>
                 </a>               
-                <a class="btn btn-circle btn-success text-white " href="{% url 'rondenew' site.id %}" >
+                <a class="btn btn-circle btn-success text-white " href="{% url 'dinew' site.id %}" >
                   <i class="ti-plus"></i>
                 </a> 
               </div>
@@ -148,27 +134,33 @@
             <div class="card card-body">
               <form id="rondeFilter" method="get" data-souslot-url="{% url 'loadsouslot' %}" data-categorie-url="{% url 'loadcategorie' %}" data-equipement-url="{% url 'loadequipement' %}">
                 {% csrf_token %}
-                <div class="row pt-3">                
+                <div class="row pt-3">               
+                  <div class="col-md-4">
+                    <div class=" ">
+                      <h6>Zone</h6> 
+                      {{filter.form.zone}}                
+                    </div>
+                  </div>                
                   <div class="col-md-4">
                     <div class=" ">
                       <h6>Statut</h6> 
                       <select class="form-control ">
                         <option value="1">-------</option>
                         <option value="1">Enregistrée</option>
-                        <option value="2">Résolue</option>
+                        <option value="2">Prise en Charge</option>
                       </select>              
                     </div>
-                  </div>
+                  </div>                
                   <div class="col-md-4">
                     <div class=" ">
-                      <h6>Zone</h6> 
-                      {{filter.form.zone}}                
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class=" ">
-                      <h6>Intervenant</h6> 
-                      {{filter.form.intervenant}}                
+                      <h6>Origine</h6> 
+                      <select class="form-control ">
+                        <option value="">-------</option>
+                        <option value="">Constaté par Client</option>                      
+                        <option value="">Maintenance Préventive</option>                      
+                        <option value="">Ronde Technique</option>                      
+                        <option value="">Autre</option>
+                      </select>              
                     </div>
                   </div>
                 </div>
@@ -220,12 +212,13 @@
           <table class="table mb-0  recent-table table-hover">
             <thead class="bg-light">
               <tr> 
-                <th style="width: 20%">Statut</th>  
-                <th style="width: 20%">Zone</th>                  
-                <th style="width: 20%">Equipement</th>               
-                <th style="width: 20%">Intervenant</th>  
-                <th style="width: 10%">Heure</th>
-                
+                <th style="width: 5%">Statut</th>                                
+                <th style="width: 25%">Objet</th>  
+                <th style="width: 10%">Zone</th>                  
+                <th style="width: 15%">Equipement</th>                                
+                <th style="width: 15%">Origine</th>   
+                <th style="width: 15%">Date Création</th>                
+                <th style="width: 15%"></th>                 
               </tr>
             </thead>
             <tbody>
@@ -236,43 +229,55 @@
                     >Enregistrée</span
                   >
                 </td>
+                <td class="txt-oflo">DI 1</td>
                 <td class="txt-oflo">Z-1</td>
                 <td class="txt-oflo">VMC.Z-1</td>
-                <td class="txt-oflo">Intervenant 1</td>
-                <td class="txt-oflo">-</td>
+                <td class="txt-oflo">Constaté par Client</td>
+                <td class="txt-oflo">22/09/2022</td>
+                <td><button
+                    class="
+                      btn
+                      d-flex
+                      align-items-center
+                      justify-content-center
+                      w-100
+                      text-sm
+                      btn-outline-primary
+                      waves-effect waves-light
+                    "
+                    type="button"
+                  >Prise en charge
+                  </button>
+                </td>
               </tr>
               <tr>
                 <td>
                   <span
-                    class="badge text-success font-weight-medium bg-light-success label-rouded"
-                    >Résolue</span
+                    class="badge text-info font-weight-medium bg-light-info label-rouded"
+                    >Prise en Charge</span
                   >
                 </td>
+                <td class="txt-oflo">DI 2</td>
                 <td class="txt-oflo">Z-2</td>
                 <td class="txt-oflo">GE.Z-2</td>
-                <td class="txt-oflo">Intervenant 2</td>
-                <td class="txt-oflo">10:53</td>
+                <td class="txt-oflo">Maintenance Préventive</td>
+                <td class="txt-oflo">18/09/2022</td>
+                <td class="txt-oflo"></td>
               </tr>
               <tr>
                 <td>
                   <span
-                    class="badge text-success font-weight-medium bg-light-success label-rouded"
-                    >Résolue</span
+                    class="badge text-info font-weight-medium bg-light-info label-rouded"
+                    >Prise en Charge</span
                   >
                 </td>
+                <td class="txt-oflo">Demande Intervention 3</td>
                 <td class="txt-oflo">Zone 1</td>
                 <td class="txt-oflo">Equipement 3</td>
-                <td class="txt-oflo">Intervenant 2</td>
-                <td class="txt-oflo">11:39</td>
-              </tr>
-              {% for ronde in rondesw %}
-              <tr> 
-                <td class="txt-oflo">{{ronde.zone}}</td>
-                <td class="txt-oflo">{{ronde.equipement.designation}}</td>
-                <td class="txt-oflo">{{ronde.intervenant.first_name}} {{ronde.intervenant.last_name}} </td> 
-                <td><span class="txt-oflo">{{ronde.datecreated|date:"d/m/Y - H:i"}}</span></td>             
-              </tr>
-              {% endfor %}              
+                <td class="txt-oflo">Ronde Technique</td>
+                <td class="txt-oflo">13/09/2022</td>
+                <td class="txt-oflo">-</td>
+              </tr>             
             </tbody>
           </table>
         </div>

@@ -1,53 +1,97 @@
-{% extends "dashboard/base.html"%}
-{% load static%} 
-{% block header %} 
+{% extends "dashboard/base.html"%} {% load static%} {% block header %}
 <style>
-th:first-child, td:first-child
-{
-  position:sticky;
-  left:0px;
- 
-}
-
+  th:first-child,
+  td:first-child {
+    position: sticky;
+    left: 0px;
+  }
 </style>
-{% endblock header %}
-{% block title %}
-<a class="nav-link waves-effect waves-dark"  href="{% url 'sites' %}" >                  
-  <span class="d-none d-md-block text-uppercase ">{{site.designation}}</span>
+{% endblock header %} {% block title %}
+<a class="nav-link waves-effect waves-dark" href="{% url 'sites' %}">
+  <span class="d-none d-md-block text-uppercase">{{site.designation}}</span>
 </a>
-{% endblock title %}
-{% block content %}
+{% endblock title %} {% block content %}
 <!-- ============================================================== -->
 <!-- Tab Section -->
 <!-- ============================================================== -->
-<div class="col-md-12">         
+<div class="col-md-12">
   <div class="card">
     <div class="card-body">
       <!-- Nav tabs -->
-      <ul class="nav nav-pills flex-column flex-sm-row" role="tablist" >
+      <ul class="nav nav-pills flex-column flex-sm-row" role="tablist">
         <li class="nav-item flex-sm-fill text-sm-center">
-          <a class="nav-link " href="{% url 'sitehome' site.id %}" >
-            <span><i class="mdi mdi-view-dashboard"></i> Tableau de Bord</span>
+          <a class="nav-link" href="{% url 'sitehome' site.id %}">
+            <span
+              ><i data-feather="grid" class="feather-sm fill-white mb-1"></i>
+              Tableau de Bord</span
+            >
           </a>
         </li>
         <li class="nav-item flex-sm-fill text-sm-center">
-          <a class="nav-link " href="{% url 'curative' site.id %}" >
-            <span><i class="mdi mdi-clipboard-alert"></i>  Maintenance Curative</span>
+          <div class="btn-group btn-group-sm" role="group">
+            <a
+              id="btnGroupDrop1"
+              type="button"
+              class="nav-link active dropdown-toggle"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <span
+                ><i
+                  data-feather="check-square"
+                  class="feather-sm fill-white mb-1"
+                ></i>
+                Maintenance Site
+              </span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+              <a
+                class="dropdown-item text-primary"
+                href="{% url 'curative' site.id %}"
+              >
+                <span>Maintenance Curative</span>
+              </a>
+              <a
+                class="dropdown-item text-primary"
+                href="{% url 'preventive' site.id %}"
+              >
+                <span>Maintenance Préventive</span>
+              </a>
+              <a
+                class="dropdown-item text-primary"
+                href="{% url 'cout' site.id %}"
+              >
+                <span>Suivi Financier</span>
+              </a>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item flex-sm-fill text-sm-center">
+          <a class="nav-link" href="{% url 'ronde' site.id %}">
+            <span
+              ><i
+                data-feather="check-circle"
+                class="feather-sm fill-white mb-1"
+              ></i>
+              Rondes Techniques</span
+            >
           </a>
         </li>
         <li class="nav-item flex-sm-fill text-sm-center">
-          <a class="nav-link active" href="{% url 'preventive' site.id %}" >
-            <span><i class="mdi mdi-calendar "></i> Maintenance Préventive</span>
-          </a>
-        </li>          
-        <li class="nav-item flex-sm-fill text-sm-center">
-          <a class="nav-link " href="{% url 'ronde' site.id %}" >
-            <span><i class="mdi mdi-checkbox-marked-circle-outline "></i> Ronde Maintenance</span>
+          <a class="nav-link" href="{% url 'di' site.id %}">
+            <span
+              ><i data-feather="edit" class="feather-sm fill-white mb-1"></i>
+              Demande Intervention</span
+            >
           </a>
         </li>
         <li class="nav-item flex-sm-fill text-sm-center">
-          <a class="nav-link" href="{% url 'stock' site.id %}" >
-            <span><i class="mdi mdi-layers"></i>  Gestion Stock</span>
+          <a class="nav-link" href="{% url 'detailsite' site.id %}">
+            <span
+              ><i data-feather="sliders" class="feather-sm fill-white mb-1"></i>
+              Administration</span
+            >
           </a>
         </li>
       </ul>
@@ -59,19 +103,25 @@ th:first-child, td:first-child
 <!-- ============================================================== -->
 <div class="page-breadcrumb border-bottom">
   <div class="row">
-      <div class=" col-lg-3 col-md-4 col-xs-12 justify-content-start d-flex align-items-center ">
-          <h5 class="font-weight-medium text-uppercase mb-0">{{site.designation}}</h5>
-      </div>
-      <div class=" col-lg-9 col-md-8 col-xs-12 d-flex justify-content-start justify-content-md-end align-self-center " >
-          <nav aria-label="breadcrumb" class="mt-2">
-              <ol class="breadcrumb mb-0 p-0">
-                  <li class="breadcrumb-item">Sites</li>
-                  <li class="breadcrumb-item active" aria-current="page">
-                    Maintenance Préventive
-                  </li>
-              </ol>
-          </nav>
-      </div>
+    <div
+      class="col-lg-3 col-md-4 col-xs-12 justify-content-start d-flex align-items-center"
+    >
+      <h5 class="font-weight-medium text-uppercase mb-0">
+        {{site.designation}}
+      </h5>
+    </div>
+    <div
+      class="col-lg-9 col-md-8 col-xs-12 d-flex justify-content-start justify-content-md-end align-self-center"
+    >
+      <nav aria-label="breadcrumb" class="mt-2">
+        <ol class="breadcrumb mb-0 p-0">
+          <li class="breadcrumb-item">Sites</li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Maintenance Préventive
+          </li>
+        </ol>
+      </nav>
+    </div>
   </div>
 </div>
 <!-- ============================================================== -->
@@ -80,60 +130,160 @@ th:first-child, td:first-child
 <!-- Container fluid  -->
 <!-- ============================================================== -->
 <div class="page-content container-fluid">
-{% if messages %}
-  {% for message in messages%}
-    <div class="alert alert-{{ message.tags}} alert-dismissible fade show" role="alert">
-      {{message}}
-      <button type="button" class="btn-close text-white" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  {% endfor %}
-{% endif %}
+  {% if messages %} {% for message in messages%}
+  <div
+    class="alert alert-{{ message.tags}} alert-dismissible fade show"
+    role="alert"
+  >
+    {{message}}
+    <button
+      type="button"
+      class="btn-close text-white"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+  {% endfor %} {% endif %}
 
   <!-- Liste des interventions  -->
   <!-- ============================================================== -->
+  <div class="card">
+    <div class="card-header text-center">
+      <h5>
+        <a
+          href="{% url 'preventive' site.id %}?{{ prev_week }}"
+          class="button btn-text text-dark"
+        >
+          <i
+            data-feather="chevrons-left"
+            class="feather-sm fill-white me-2"
+          ></i>
+        </a>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{mydate}}
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a
+          href="{% url 'preventive' site.id %}?{{ next_week }}"
+          class="button btn-text text-dark"
+        >
+          <i
+            data-feather="chevrons-right"
+            class="feather-sm fill-white me-2"
+          ></i>
+        </a>
+      </h5>
+    </div>
+  </div>
   <div class="row">
     <div class="col-md-12 col-lg-12">
-      <div class="card ">
+      <div class="card">
         <div class="card-body">
           <div class="d-flex align-items-center px-3 py-4 border-bottom">
             <div>
               <h4 class="card-title">Interventions Curatives</h4>
             </div>
             <div class="ms-auto">
-              <a class="btn btn-circle btn-secondary text-white" data-bs-toggle="collapse" href="#collapseExample"
-                    role="button" aria-expanded="false" aria-controls="collapseExample" > 
-                    <i class="ti-filter"></i>
-              </a>              
-              <a class="btn btn-circle btn-success text-white " href="{% url 'newpreventive' site.id %}" >
+              <a
+                class="btn btn-circle btn-secondary text-white"
+                data-bs-toggle="collapse"
+                href="#collapseExample"
+                role="button"
+                aria-expanded="false"
+                aria-controls="collapseExample"
+              >
+                <i class="ti-filter"></i>
+              </a>
+              <a
+                class="btn btn-circle btn-success text-white"
+                href="{% url 'newpreventive' site.id %}"
+              >
                 <i class="ti-plus"></i>
               </a>
             </div>
           </div>
           <div class="collapse" id="collapseExample">
             <div class="card card-body">
-              Filtre en cours
-            </div>
+              <form id="curativeFilter" method="get" data-souslot-url="{% url 'loadsouslot' %}" data-categorie-url="{% url 'loadcategorie' %}" data-equipement-url="{% url 'loadequipement' %}">
+                {% csrf_token %}
+                <div class="row pt-3">               
+                  <div class="col-md-6">
+                    <div class=" ">
+                      <h6>Zone</h6> 
+                      {{filter.form.zone}}                
+                    </div>
+                  </div>
+                </div>
+                <div class="row pt-3">
+                  <div class="col-md-3">
+                    <div class=" ">
+                      <h6>Lot</h6> 
+                      {{filter.form.lot}}                
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                      <div class="">
+                        <h6>Sous Lot</h6> 
+                        {{filter.form.souslot}}
+                      </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class=" ">
+                      <h6>Catégorie</h6> 
+                      {{filter.form.categorie}}                
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                      <div class="">
+                        <h6>Equipement</h6> 
+                        {{filter.form.equipement}}
+                      </div>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <div class="card-body">              
+                    <div class="d-flex align-items-center p-4">
+                      <div class="ms-auto">
+                        <button type="submit" class="btn btn-secondary rounded-pill px-4 float-right" >
+                          <div class="d-flex align-items-center">
+                            Filtrer
+                          </div>
+                        </button>
+                      </div>
+                  </div>
+                </div>
+              </form></div>
           </div>
         </div>
-        <div class="card-body">
-          <div class="d-flex align-items-center px-3 py-4">
-            <a id="aprevmonth" href="{% url 'preventive' site.id %}?{{ prev_month }}" class="  btn btn-outline-secondary" > {{ pm }}<br> << </a>            
-            <div class="ms-auto">
-              <a id="anextmonth" href="{% url 'preventive' site.id %}?{{ next_month }}" class="  btn btn-outline-secondary " >  {{ nm }} <br> >> </a>
-            </div>
+        <div class="p-3">
+          <div class="card-body">
+            <button class="btn btn-success w-10" ></button> Hebdomadaire&nbsp;&nbsp;&nbsp;&nbsp;  
+            <button class="btn btn-warning w-10 ml-2" ></button> Mensuelle&nbsp;&nbsp;&nbsp;&nbsp;  
+            <button class="btn btn-info w-10 ml-2" ></button> Trimestrielle&nbsp;&nbsp;&nbsp;&nbsp;  
+            <button class="btn btn-primary w-10 ml-2" ></button> Semestrielle&nbsp;&nbsp;&nbsp;&nbsp; 
+            <button class="btn btn-secondary w-10 ml-2" ></button> Annuelle&nbsp;&nbsp;&nbsp;&nbsp;  
+          </button>
+
           </div>
-        </div>
-        <div class="p-3"> 
           <div class="table-responsive-sm scrollable" style="height: 450px">
-            <table class="table mb-0  recent-table table-bordered" >
-              <thead >
-                <tr>                  
-                  <th class="bg-light" style="width: 35%;padding-right: 280px;border-bottom: none;"></th>         
-                  <th class="text-uppercase" colspan="31" style="width: 65%">{{strm}}</th>  
-                </tr>           
+            <table class="table mb-0 recent-table text-center">
+              <thead class="border-none">
+                <tr>
+                  <th style="width: 5%"></th>                  
+                  <th style="width: 30%"></th>
+                  <th style="width: 15%"></th>                    
+                  <th style="width: 15%"></th>  
+                  <th style="width: 5%;border-bottom:1px solid;border-color:#EBECF0;"></th>  
+                  <th style="width: 5%;border-bottom:1px solid;border-color:#EBECF0;"></th>  
+                  <th style="width: 5%;border-bottom:1px solid;border-color:#EBECF0;"></th>  
+                  <th style="width: 5%;border-bottom:1px solid;border-color:#EBECF0;"></th>  
+                  <th style="width: 5%;border-bottom:1px solid;border-color:#EBECF0;"></th>  
+                  <th style="width: 5%;border-bottom:1px solid;border-color:#EBECF0;"></th>  
+                  <th style="width: 5%;border-bottom:1px solid;border-color:#EBECF0;"></th>
+                </tr>
               </thead>
-              <tbody id="tbody_planning" data-url="{% url 'getsitetplanification' site.id %}?{{ mday }}">                 
-              </tbody>
+              <tbody
+                id="tbody_planning"
+                data-url="{% url 'getsitetplanification' site.id %}?{{ mday }}"
+              ></tbody>
             </table>
           </div>
         </div>
@@ -145,11 +295,10 @@ th:first-child, td:first-child
 <!-- End Container fluid  -->
 <!-- ============================================================== -->
 <!-- ============================================================== -->
-{{site_id|json_script:"site_id" }}
-{{this_month|json_script:"month" }}
-{% endblock content %}
-
+{{site_id|json_script:"site_id" }} {{date|json_script:"date" }}
+{{week|json_script:"week" }} {{year|json_script:"year" }} {% endblock content %}
 {% block footer %}
 <script src="{% static 'dashboard/dist/js/moment-locale.js'%}"></script>
 <script src="{% static 'dashboard/dist/js/hpms/preventive.js' %}"></script>
 {% endblock footer %}
+

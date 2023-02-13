@@ -1,4 +1,3 @@
-
 // -------------------------------------------------------------------------------------------------------------------------------------------
 // Dashboard 5 : Chart Init Js
 // -------------------------------------------------------------------------------------------------------------------------------------------
@@ -20,7 +19,7 @@ $(function () {
     chart: {
       fontFamily: '"Nunito Sans", sans-serif',
       type: "bar",
-      height: 350,
+      height: 390,
       stacked: true,
       toolbar: {
         show: false,
@@ -112,7 +111,7 @@ $(function () {
     labels: ["Résolues", "En cours", "Enregistrées", "En charge"],
     chart: {
       type: "donut",
-      height: 270,
+      height: 360,
       fontFamily: '"Nunito Sans",sans-serif',
     },
     dataLabels: {
@@ -155,6 +154,7 @@ $(function () {
           },
         },
       },
+      
     },
     colors: ["#76ba1b", "#ffa726","#5E4E3E", "#1c4966"],
     tooltip: {
@@ -162,8 +162,17 @@ $(function () {
       theme: "dark",
       fillSeriesColor: false,
     },
+    dataLabels: {
+      formatter(val) {
+      },
+    },
     legend: {
-      show: false,
+      position: "bottom",
+      horizontalAlign: "left",
+      offsetX: 20,
+      labels: {
+        colors: ["#a1aab2"],
+      },
     },
     responsive: [
       {

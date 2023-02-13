@@ -1,11 +1,27 @@
 {% extends "dashboard/base.html"%}
 {% load static%} 
 {% block title %}
+<a class="nav-link waves-effect waves-dark"  href="{% url 'sites' %}" >                  
+  <span class="d-none d-md-block text-uppercase">{{site.designation}}</span>
+</a>
 {% endblock title %}
 {% block content %}
 <!-- Container fluid  -->
 <!-- ============================================================== -->
 <div class="page-content container-fluid">
+  <div class="card">
+    <div class="card-header text-center text-uppercase">
+    <h5>
+        <a  id="aprevmonth" href="{% url 'equipementintervention' site.id equipement.id %}?{{ prev_month }}" class="button btn-text text-dark" >
+          <i data-feather="chevrons-left" class="feather-sm fill-white me-2" ></i>
+        </a>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{tm}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a id="anextmonth" href="{% url 'equipementintervention' site.id equipement.id %}?{{ next_month }}" class="button btn-text text-dark" >
+          <i data-feather="chevrons-right" class="feather-sm fill-white me-2" ></i>
+        </a>
+      </h5>
+    </div>
+  </div>
   <div class="row">
     <div class="col-md-12">
       <div class="card">
@@ -16,33 +32,9 @@
             </div>
           </div>
         </div>
-        <div class="table-responsive ">
-            <table class="table table-sm table-borderless" width="100%" cellspacing="0">
-                <tbody>
-                    <tr>
-                        <td  style="width: 14%" class=""> <a id="aprevmonth" href="{% url 'equipementintervention' site.id equipement.id %}?{{ prev_month }}" class="  btn btn-outline-secondary" > {{ pm }}<br> << </a></td>
-                        <td  style="width: 73%" style="vertical-align: middle;" class=" h4 font-weight-bold text-dark text-center"> <br>                            
-                            {% if tm == '01'%}Janvier{% endif %}
-                            {% if tm == '02'%}Février{% endif %}
-                            {% if tm == '03'%}Mars{% endif %}
-                            {% if tm == '04'%}Avril{% endif %}
-                            {% if tm == '05'%}Mai{% endif %}
-                            {% if tm == '06'%}Juin{% endif %}
-                            {% if tm == '07'%}Juillet{% endif %}
-                            {% if tm == '08'%}Aout{% endif %}
-                            {% if tm == '09'%}Septembre{% endif %}
-                            {% if tm == '10'%}Octobre{% endif %}
-                            {% if tm == '11'%}Novembre{% endif %}
-                            {% if tm == '12'%}Décembre{% endif %}
-                        </td>
-                        <td  style="width: 13%" class="" > <a id="anextmonth" href="{% url 'equipementintervention' site.id equipement.id %}?{{ next_month }}" class="  btn btn-outline-secondary " >  {{ nm }} <br> >> </a></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div> 
         <div class="table-responsive" >
           <table class="table mb-0  recent-table">
-            <thead class="table-secondary">
+            <thead class="bg-light-secondary">
               <tr>
                 <th style="width: 85%" scope="col" class="border-0 fs-4 font-weight-medium ps-4" >
                   Maintenance Préventive 
@@ -94,7 +86,7 @@
             </tbody>
           </table>
           <table class="table mb-0  recent-table">
-            <thead class="table-secondary">
+            <thead class="bg-light-secondary">
               <tr>
                 <th style="width: 85%" scope="col" class="border-0 fs-4 font-weight-medium ps-4" >
                   Maintenance Curative 

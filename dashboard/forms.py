@@ -149,7 +149,64 @@ class EquipementForm(forms.ModelForm):
 		for field in self.fields.values():
 			field.widget.attrs['class'] = 'form-control'
 
-#Maintenance
+## Site Equipement
+
+class SiteEquipementForm(forms.ModelForm):
+
+	error_css_class = 'text-xs font-weight-bold text-danger text-uppercase '
+
+	class Meta:
+		model= SiteEquipement
+		fields=('lot','souslot','categorie','equipement','zone')
+		
+	def __init__(self,site,*args, **kwargs):
+		super(SiteEquipementForm, self).__init__(*args, **kwargs)
+
+		self.fields['zone'].queryset = Zone.objects.filter(site=site)
+		self.fields['zone'].empty_label = "------"							
+		self.fields['lot'].empty_label = "------"	
+		self.fields['souslot'].queryset = Souslot.objects.none()		
+		self.fields['souslot'].empty_label = "------"	
+		self.fields['categorie'].queryset = Categorie.objects.none()
+		self.fields['categorie'].empty_label = "------"	
+		self.fields['equipement'].queryset = Equipement.objects.none()
+		self.fields['equipement'].empty_label = "------"	
+
+		if 'lot' in self.data:
+			try:
+				lotid= int(self.data.get('lot'))
+				lot=Lot.objects.get(id=lotid)					
+				self.fields['souslot'].queryset =Souslot.objects.filter(lot=lot)
+			except (ValueError, TypeError):
+				pass  
+		elif self.instance.pk:
+			self.fields['souslot'].queryset = Souslot.objects.filter(lot=self.instance.lot)
+		
+		if 'souslot' in self.data:
+			try:
+				souslotid= int(self.data.get('souslot'))
+				souslot=Souslot.objects.get(id=souslotid)					
+				self.fields['categorie'].queryset =Categorie.objects.filter(souslot=souslot)
+			except (ValueError, TypeError):
+				pass  
+		elif self.instance.pk:
+			self.fields['categorie'].queryset = Categorie.objects.filter(souslot=self.instance.souslot)
+		
+		if 'categorie' in self.data:
+			try:
+				categorieid= int(self.data.get('categorie'))
+				categorie=Categorie.objects.get(id=categorieid)					
+				self.fields['equipement'].queryset =Equipement.objects.filter(categorie=categorie)
+			except (ValueError, TypeError):
+				pass  
+		elif self.instance.pk:
+			self.fields['equipement'].queryset = Equipement.objects.filter(categorie=self.instance.categorie)
+		
+		for field in self.fields.values():
+			field.widget.attrs['class'] = 'form-control'
+
+
+# QR CODE
 
 class QrForm(forms.ModelForm):
 
@@ -265,11 +322,9 @@ class CurativeForm(forms.ModelForm):
 
 	class Meta:
 		model= Tache
-		fields=('criticite','objet','statut','intervenant','zone','lot','souslot','categorie','equipement','imagear')		
-		widgets={'datedebut':forms.DateTimeInput(format=('%d/%m/%Y %H:%M'), attrs={'class':'form-control',}),
-				'datefin':forms.DateTimeInput(format=('%d/%m/%Y %H:%M'), attrs={'class':'form-control'}),
-				'intervenant':forms.CheckboxSelectMultiple,
-				}
+		fields=('criticite','objet','statut','intervenant','zone','lot','souslot','categorie','equipement','imagear','imagepr','datedebut','description')		
+		widgets={'datedebut':forms.DateTimeInput(format=('%d/%m/%Y %H:%M'), attrs={'class':'form-control','type':'datetime-local'}),
+				'datefin':forms.DateTimeInput(format=('%d/%m/%Y %H:%M'), attrs={'class':'form-control'}),}
 		
 	def __init__(self,site,*args, **kwargs):
 		super(CurativeForm, self).__init__(*args, **kwargs)
@@ -529,7 +584,63 @@ class PreventiveFicheForm(forms.ModelForm):
 		
 		for field in self.fields.values():
 			field.widget.attrs['class'] = 'form-control'
-			
+
+#Rondes
+class RondeForm(forms.ModelForm):
+
+	error_css_class = 'text-xs font-weight-bold text-danger text-uppercase '
+
+	class Meta:
+		model= Ronde
+		fields=('intervenant','zone','lot','souslot','categorie','equipement',)		
+		
+	def __init__(self,site,*args, **kwargs):
+		super(RondeForm, self).__init__(*args, **kwargs)        							
+		
+		self.fields['intervenant'].queryset = site.intervenantsite.all()
+		self.fields['intervenant'].empty_label = "------"	
+		self.fields['zone'].queryset = Zone.objects.filter(site=site)
+		self.fields['zone'].empty_label = "------"	
+		self.fields['lot'].empty_label = "------"	
+		self.fields['souslot'].queryset = Souslot.objects.none()		
+		self.fields['souslot'].empty_label = "------"	
+		self.fields['categorie'].queryset = Categorie.objects.none()
+		self.fields['categorie'].empty_label = "------"	
+		self.fields['equipement'].queryset = Equipement.objects.none()
+		self.fields['equipement'].empty_label = "------"	
+
+		if 'lot' in self.data:
+			try:
+				lotid= int(self.data.get('lot'))
+				lot=Lot.objects.get(id=lotid)					
+				self.fields['souslot'].queryset =Souslot.objects.filter(lot=lot)
+			except (ValueError, TypeError):
+				pass  
+		elif self.instance.pk:
+			self.fields['souslot'].queryset = Souslot.objects.filter(lot=self.instance.lot)
+		
+		if 'souslot' in self.data:
+			try:
+				souslotid= int(self.data.get('souslot'))
+				souslot=Souslot.objects.get(id=souslotid)					
+				self.fields['categorie'].queryset =Categorie.objects.filter(souslot=souslot)
+			except (ValueError, TypeError):
+				pass  
+		elif self.instance.pk:
+			self.fields['categorie'].queryset = Categorie.objects.filter(souslot=self.instance.souslot)
+		
+		if 'categorie' in self.data:
+			try:
+				categorieid= int(self.data.get('categorie'))
+				categorie=Categorie.objects.get(id=categorieid)					
+				self.fields['equipement'].queryset =Equipement.objects.filter(categorie=categorie)
+			except (ValueError, TypeError):
+				pass  
+		elif self.instance.pk:
+			self.fields['equipement'].queryset = Equipement.objects.filter(categorie=self.instance.categorie)
+		
+		for field in self.fields.values():
+			field.widget.attrs['class'] = 'form-control'
 
 #Stock
 

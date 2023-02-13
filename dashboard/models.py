@@ -60,6 +60,21 @@ class Equipement(models.Model):
 	def __str__(self):
 		return f'{self.designation}'
 
+#Equipement du site
+
+class SiteEquipement(models.Model):
+
+	site=models.ForeignKey(Site,on_delete=models.CASCADE,verbose_name="Site")
+	zone=models.ForeignKey(Zone,null=True,blank=True,on_delete=models.SET_NULL,verbose_name="Zone")
+	lot=models.ForeignKey(Lot,null=True,on_delete=models.SET_NULL,verbose_name="Lot")
+	souslot=models.ForeignKey(Souslot,null=True,on_delete=models.SET_NULL,verbose_name="Sous Lot")
+	categorie=models.ForeignKey(Categorie,null=True,on_delete=models.SET_NULL,verbose_name="Categorie")
+	equipement=models.ForeignKey(Equipement,null=True,on_delete=models.SET_NULL,verbose_name="Equipement")
+
+	def __str__(self):
+		return f'{self.equipement}'
+
+
 #Stock
 
 class Stock(models.Model):
@@ -83,9 +98,59 @@ class Mouvement(models.Model):
 class Ronde(models.Model):
 	#Site
 	site=models.ForeignKey(Site, on_delete=models.CASCADE,verbose_name='Site',default='')
+	zone=models.ForeignKey(Zone,null=True,blank=True,on_delete=models.SET_NULL,verbose_name="Zone")
+	lot=models.ForeignKey(Lot,on_delete=models.SET_NULL,null=True,verbose_name='Lot',default='')	
+	souslot=models.ForeignKey(Souslot,on_delete=models.SET_NULL,null=True,verbose_name='Sous-Lot',default='')
+	categorie=models.ForeignKey(Categorie,on_delete=models.SET_NULL,null=True,verbose_name='Catégorie',default='')	
 	equipement=models.ForeignKey(Equipement,on_delete=models.SET_NULL,null=True,verbose_name='Equipement',default='')
 	datecreated=models.DateTimeField(default=timezone.now)
-	intervenant=models.ForeignKey(User,on_delete=models.SET_NULL,null=True,verbose_name='ronde_intervenant')
+	intervenant=models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=False,verbose_name='Intervenant')
+	
+
+	def __str__(self):
+		return f'{self.site}'
+
+# Demande d'intervention
+
+class Demandeintervention:
+	statut_choices=(('Enregistrée','Enregistrée'),
+		('Prise en charge','Prise en charge'),
+		('Acceptée','Acceptée'),
+		)
+	source_choices=(('Maintenance Curative','Maintenance Curative'),
+		('Maintenance Préventive','Maintenance Préventive'),
+		('Ronde Technique','Ronde Technique'),
+		('Demande Client','Demande Client'),
+		)
+	criticite=(('c1','C1'),('c2','C2'),('c3','C3'))	
+	criticite=models.CharField(max_length=100, choices=criticite,default='c1')
+	auteur=models.ForeignKey(User, on_delete=models.SET_NULL,null=True ,verbose_name='Auteur')	
+	statut=models.CharField(max_length=100,choices=statut_choices,default='Enregistrée')
+	objet=models.CharField(max_length=1000,verbose_name='Objet',default='')
+	#Intervenant
+	intervenant=models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=False,verbose_name='Intervenant')
+	#Site
+	site=models.ForeignKey(Site, on_delete=models.CASCADE,verbose_name='Site',default='')
+	zone=models.ForeignKey(Zone,on_delete=models.SET_NULL,null=True, verbose_name='Zone',default='')
+	#Equipement
+	lot=models.ForeignKey(Lot,on_delete=models.SET_NULL,null=True,verbose_name='Lot',default='')	
+	souslot=models.ForeignKey(Souslot,on_delete=models.SET_NULL,null=True,verbose_name='Sous-Lot',default='')
+	categorie=models.ForeignKey(Categorie,on_delete=models.SET_NULL,null=True,verbose_name='Catégorie',default='')		
+	equipement=models.ForeignKey(Equipement,on_delete=models.SET_NULL,null=True,verbose_name='Equipement',default='')
+	#date Enregistré 
+	datecreated=models.DateTimeField(default=timezone.now)
+	# date Prise en charge
+	datecharge=models.DateTimeField(default=timezone.now)
+	#date Accepté
+	dateaccepte=models.DateTimeField(default=timezone.now)
+	#Images
+	imagepr = models.ImageField(null=True,verbose_name=' Image Etat Finale',upload_to='interventions',blank=True)
+	imagear = models.ImageField(null=True,verbose_name=' Image Etat Initiale ',upload_to='interventions',blank=True)
+	#Cout
+	cout=models.DecimalField(max_digits=9,default=0, decimal_places=2)
+
+	def __str__(self):
+		return f'{self.objet }' 
 
 
 # Tache
@@ -97,7 +162,7 @@ class Tache(models.Model):
 	criticite=(('c1','C1'),('c2','C2'),('c3','C3'))
 
 	statut_choices=(('Enregistrée','Enregistrée'),
-		('Pris en charge','Pris en charge'),
+		('Prise en charge','Prise en charge'),
 		('Travaux en cours','Travaux en cours'),
 		('Pending','Pending'),
 		('Résolue','Résolue'),
@@ -105,7 +170,7 @@ class Tache(models.Model):
 
 	auteur=models.ForeignKey(User, on_delete=models.SET_NULL,null=True ,verbose_name='Auteur')
 	criticite=models.CharField(max_length=100, choices=criticite,default='c1')
-	statut=models.CharField(max_length=100,choices=statut_choices,default='Pris en charge')
+	statut=models.CharField(max_length=100,choices=statut_choices,default='Enregistrée')
 	objet=models.CharField(max_length=1000,verbose_name='Objet',default='')	
 	#Intervenant
 	intervenant=models.ManyToManyField(User,related_name='Intervenant')
@@ -144,6 +209,8 @@ class Tache(models.Model):
 	#Images
 	imagepr = models.ImageField(null=True,verbose_name=' Image Etat Finale',upload_to='interventions',blank=True)
 	imagear = models.ImageField(null=True,verbose_name=' Image Etat Initiale ',upload_to='interventions',blank=True)
+	#Cout
+	cout=models.DecimalField(max_digits=9,default=0, decimal_places=2)
 
 	def __str__(self):
 		return f'{self.objet }' 

@@ -114,7 +114,7 @@
                     <span><u><strong> Statut:</strong></u> &nbsp;{{tache.statut}}</span><br/>
                   </td>
                   <td class="text-end">
-                    <span ><u><strong> Date Debut :</strong></u> &nbsp;{{tache.datedebut|date:"d/m/Y - H:m"}}</span><br/>
+                    <span ><u><strong> Date Debut :</strong></u> &nbsp;{{tache.datedebut|date:"d/m/Y - H:i"}}</span><br/>
                     <span ><u><strong> Date Fin :</strong></u>
                       {% if tache.statut == 'Résolue' %}
                        {{tache.datefin|date:"d/m/Y - H:m"}}

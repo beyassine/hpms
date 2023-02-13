@@ -21,7 +21,7 @@ from xhtml2pdf import pisa
 import os
 from django.conf import settings
 from django.http import HttpResponse,JsonResponse
-
+import locale
 
 #locale.setlocale(locale.LC_ALL, 'fr_FR')
 
@@ -44,7 +44,7 @@ def getplanification(request, pk):
 
 @api_view(['GET'])
 def getsitetplanification(request, pk):
-    ctx = {'day': request.GET.get('day', None)}
+    ctx = {'week': get_date(request.GET.get('week', None))}
     site = Site.objects.get(id=pk)
     serializer = PlanificationSiteSerializer(site,context=ctx)
     return Response(serializer.data)
@@ -83,7 +83,8 @@ def detailsite(request,pk):
     intervenants=site.intervenantsite.all()
     responsables=site.responsablesite.all()
     clients=site.clientsite.all()
-    context={'site':site,'zones':zones,'intervenants':intervenants,'responsables':responsables,'clients':clients}
+    equipements=SiteEquipement.objects.filter(site=site)
+    context={'site':site,'zones':zones,'intervenants':intervenants,'responsables':responsables,'clients':clients,'equipements':equipements}
     return render(request,'dashboard/administration/sitedetail.html',context)
 
 def siteaddintervenant(request,pk):
@@ -402,8 +403,9 @@ def equipementintervention(request,pk1,pk2):
     site=Site.objects.get(id=pk1)
     equipement=Equipement.objects.get(id=pk2)
     m = get_date(request.GET.get('month', None))
-    month = m.strftime("%Y-%m-%d")
-    tm = m.strftime("%m")
+    month = m.strftime("%Y-%m-%d")    
+    locale.setlocale(locale.LC_TIME, "fr_FR")
+    tm = m.strftime("%B")
     pm = (m - relativedelta(months=1)).strftime("%m-%Y")
     nm = (m + relativedelta(months=1)).strftime("%m-%Y")
     date_obj = datetime.strptime(month, '%Y-%m-%d')
@@ -542,34 +544,59 @@ def deletecollab(request,pk):
 
 def sitehome(request,pk):
     site=Site.objects.get(id=pk)
-    context={'site':site}
+    taches=Tache.objects.filter(site=site)
+    filter=CurativeFilter(site.id,request.GET,request=request,queryset=taches)
+    context={'site':site,'filter':filter}
     return render(request,'dashboard/maintenance/sitehome.html',context)
+
+## Equipement Site
+
+def siteequipement(request,pk):
+    site=Site.objects.get(id=pk)
+    equipements=SiteEquipement.objects.filter(site=site)
+    context={'site':site,'equipements':equipements}
+    return render (request,'dashboard/equipementsite/equipementsite.html',context)
+
+
+def newsiteequipement(request,pk):
+    site=Site.objects.get(id=pk)
+    if request.method=="POST":
+        form=SiteEquipementForm(site,request.POST)
+        if form.is_valid():
+            form.instance.site=site
+            form.save()
+            return redirect('siteequipement',pk=site.id)
+    else:
+        form=SiteEquipementForm(site)
+    return render(request,'dashboard/equipementsite/siteequipementnew.html',{'form':form,'site':site})
 
 ## Rondes 
 def ronde(request,pk):
     site=Site.objects.get(id=pk)
     d = get_date(request.GET.get('day', None))
     day = d.strftime("%Y-%m-%d")
-
-    td = d.strftime("%d/%m/%Y")
-
+    locale.setlocale(locale.LC_TIME, "fr_FR")
+    td = d.strftime("%A  %d/%m/%Y")
     rondes=Ronde.objects.filter(site=site,datecreated__date=day).order_by('-id')    
-    filter=RondeFliter(site.id,request.GET,request=request,queryset=rondes)
+    filter=RondeFilter(site.id,request.GET,request=request,queryset=rondes)
     frondes=filter.qs
     context={'site':site,'rondes':frondes,'td':td,'prev_day':prev_day(d),'next_day':next_day(d),'filter':filter}
 
     return render(request,'dashboard/ronde/ronde.html',context)
 
-def newronde(request,pk1,pk2):
+def newronde(request,pk1):
     site=Site.objects.get(id=pk1)
-    equipement=Equipement.objects.get(id=pk2)
-
     if request.method=="POST":
-        Ronde.objects.create(site=site,equipement=equipement,intervenant=User.objects.get(username='admin'))
-        messages.success(request, f'Ronde ajoutée avec succés')
-        return redirect('ronde',pk=site.id)    
+        form=RondeForm(site,request.POST)
+        if form.is_valid():
+            form.instance.site=site
+            form.save()
+            messages.success(request, f'Nouvelle Ronde ajoutée avec succés')
+            return redirect('ronde',pk=site.id)
+    else:
+        form=RondeForm(site)
     
-    context={'site':site,'equipement':equipement}
+    context={'site':site,'form':form}
 
     return render(request,'dashboard/ronde/rondenew.html',context)
 
@@ -578,7 +605,7 @@ def newronde(request,pk1,pk2):
 def curative(request,pk):
     site=Site.objects.get(id=pk)
     taches=Tache.objects.filter(site=site).order_by('-id')
-    filter=CurativeFliter(site.id,request.GET,request=request,queryset=taches)
+    filter=CurativeFilter(site.id,request.GET,request=request,queryset=taches)
     ftaches=filter.qs
     context={'site':site,'taches':ftaches,'filter':filter}
     return render(request,'dashboard/maintenance/curative.html',context)
@@ -654,18 +681,26 @@ def fichecurative(request,pk):
 
 def preventive(request,pk):
     site=Site.objects.get(id=pk)
-    interventions=Intervention.objects.filter(planification__site=site)
-    m = get_date(request.GET.get('month', None))
-    month = m.strftime("%Y-%m-%d")
-    mday='day='+ str(month)
-    tm = m.strftime("%m/%y")
-    strm=calendar.month_name[int(m.strftime("%m"))]
-    pm = (m - relativedelta(months=1)).strftime("%m/%y")
-    nm = (m + relativedelta(months=1)).strftime("%m/%y")
-    context={'site':site,'interventions':interventions,'site_id':site.id,'mday':mday,'strm':strm,
-    'this_month': month, 'm': m, 'tm': tm, 'pm': pm, 'nm': nm, 'prev_month': prev_month(m), 'next_month': next_month(m)}
-
+    d = get_date(request.GET.get('week', None))
+    d=d.strftime("%Y-%m-%d")
+    date_obj = datetime.strptime(d, '%Y-%m-%d') 
+    calendar_week=date_obj.isocalendar()[1]
+    filter=CurativeFilter(site.id,request.GET,request=request)
+    mydate=f'Semaine {calendar_week} - {date_obj.year}'
+    context={'site':site,'site_id':site.id,'mydate':mydate,'date':date_obj,'week':calendar_week,'year':date_obj.year,'prev_week': prev_week(date_obj), 'next_week': next_week(date_obj),'filter':filter}
     return render(request,'dashboard/maintenance/preventive.html',context)
+
+def prev_week(m):
+    prev_week = m - relativedelta(days=7)
+    week = 'week=' + str(prev_week.year) + '-' + \
+        str(prev_week.month) + '-' + str(prev_week.day)
+    return week
+
+def next_week(m):
+    next_week = m + relativedelta(days=7)
+    week = 'week=' + str(next_week.year) + '-' + \
+        str(next_week.month) + '-' + str(next_week.day)
+    return week
 
 def newpreventive(request,pk):
     site=Site.objects.get(id=pk)
@@ -750,8 +785,6 @@ def updateintervention(request,pk):
     
     context={'site':site,'intervention':intervention,'form':form}
     return render(request,'dashboard/maintenance/interventionupdate.html',context)
-    
-
 
 def get_date(req_month):
     if req_month:
@@ -786,6 +819,26 @@ def next_day(d):
     day='day=' + str(next_day.year) + '-' + str(next_day.month)+ '-' + str(next_day.day)
     return day
 
+### Suivi Financier 
+def cout(request,pk):
+    site=Site.objects.get(id=pk)
+    filter=CurativeFilter(site.id,request.GET,request=request)
+    context={'site':site,'filter':filter}
+    return render(request,'dashboard/maintenance/cout.html',context)
+
+## Demande Interventions
+
+def di(request,pk):
+    site=Site.objects.get(id=pk)
+    filter=CurativeFilter(site.id,request.GET,request=request)
+    context={'site':site,'filter':filter}
+    return render(request,'dashboard/di/di.html',context)
+
+def dinew(request,pk):
+    site=Site.objects.get(id=pk)
+    form=CurativeForm(site)
+    context={'site':site,'form':form}
+    return render(request,'dashboard/di/dinew.html',context)
 
 ### Gestion Stock
 

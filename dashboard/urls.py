@@ -76,13 +76,16 @@ urlpatterns=[
 	###RondeQr CODE
 	path('administrateur/sites/<int:pk>/getrondeqr',views.getrondeqr,name='getrondeqr'),
 	path('sites/<int:pk1>/<int:pk2>/rondeqr',views.RondeQrPDF.as_view(),name='RondeQrPDF'),
-	
+		
 	## Sites
 	### Tableau de Bord
 	path('sites/<int:pk>',views.sitehome,name='sitehome'),
+	### Equipement Site
+	path('sites/<int:pk>/equipements',views.siteequipement,name='siteequipement'),
+	path('sites/<int:pk>/equipement/nouveau',views.newsiteequipement,name='newsiteequipement'),
 	### Rondes
 	path('sites/<int:pk>/ronde',views.ronde,name='ronde'),
-	path('sites/<int:pk1>/ronde/<int:pk2>/ajouter',views.newronde,name='rondenew'),
+	path('sites/<int:pk1>/ronde/ajouter',views.newronde,name='rondenew'),
 	### Maintenance Curative
 	path('sites/<int:pk>/curative',views.curative,name='curative'),
 	path('sites/curative/<int:pk>/nouveau',views.newcurative,name='newcurative'),
@@ -97,6 +100,11 @@ urlpatterns=[
 	path('sites/preventive/<int:pk>/modifier',views.updateintervention,name='updateintervention'),
 	path('sites/<int:pk1>/preventive/<int:pk2>/modifier',views.preventiveupdate,name='preventiveupdate'),
 	path('sites/preventive/<int:pk>/supprimer',views.deletepreventive,name='deletepreventive'),
+	### Suivi Financier
+	path('sites/<int:pk>/cout',views.cout,name='cout'),
+	### Demande Intervention
+	path('sites/<int:pk>/di',views.di,name='di'),
+	path('sites/<int:pk>/di/nouveau',views.dinew,name='dinew'),
 	### Gestion de stock
 	path('sites/<int:pk>/stock',views.stock,name='stock'),
 	path('sites/stock/<int:pk>/noveau',views.newstock,name='newstock'),

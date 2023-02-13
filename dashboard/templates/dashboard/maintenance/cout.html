@@ -59,7 +59,7 @@
           </a>
         </li>      
         <li class="nav-item flex-sm-fill text-sm-center">
-          <a class="nav-link" href="{% url 'di' site.id %}">
+          <a class="nav-link" href="{% url 'stock' site.id %}">
             <span><i data-feather="edit" class="feather-sm fill-white mb-1" ></i> Demande Intervention</span>
           </a>
         </li>
@@ -85,7 +85,7 @@
               <ol class="breadcrumb mb-0 p-0">
                   <li class="breadcrumb-item">Maintenance Site</li>
                   <li class="breadcrumb-item active" aria-current="page">
-                    Maintenance Curative
+                    Suivi Financier
                   </li>
               </ol>
           </nav>
@@ -106,19 +106,6 @@
     </div>
   {% endfor %}
 {% endif %}
-  <div class="card">
-    <div class="card-header text-center">
-    <h5>
-        <a href="" class="button btn-text text-dark" >
-          <i data-feather="chevrons-left" class="feather-sm fill-white me-2" ></i>
-        </a>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Semaine 38 - 2022 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="" class="button btn-text text-dark" >
-          <i data-feather="chevrons-right" class="feather-sm fill-white me-2" ></i>
-        </a>
-      </h5>
-    </div>
-  </div>
   <!-- Liste des interventions  -->
   <!-- ============================================================== -->
   <div class="row">
@@ -127,16 +114,13 @@
         <div class="card-body">
           <div class="d-flex align-items-center px-3 py-4 border-bottom">
             <div>
-              <h4 class="card-title">Interventions Curatives</h4>
+              <h4 class="card-title">Suivi Financier</h4>
             </div>
             <div class="ms-auto">
               <a class="btn btn-circle btn-secondary text-white" data-bs-toggle="collapse" href="#collapseExample"
                     role="button" aria-expanded="false" aria-controls="collapseExample" > 
                     <i class="ti-filter"></i>
-              </a>              
-              <a class="btn btn-circle btn-success text-white " href="{% url 'newcurative' site.id %}" >
-                <i class="ti-plus"></i>
-              </a>
+              </a>     
             </div>
           </div>
           <div class="collapse" id="collapseExample">
@@ -144,16 +128,16 @@
               <form id="curativeFilter" method="get" data-souslot-url="{% url 'loadsouslot' %}" data-categorie-url="{% url 'loadcategorie' %}" data-equipement-url="{% url 'loadequipement' %}">
                 {% csrf_token %}
                 <div class="row pt-3">
-                  <div class="col-md-1">
+                  <div class="col-md-6">
                     <div class=" ">
-                      <h6>Criticité</h6> 
-                      {{filter.form.criticite}}                
-                    </div>
-                  </div>
-                  <div class="col-md-5">
-                    <div class=" ">
-                      <h6>Statut</h6> 
-                      {{filter.form.statut}}                
+                      <h6>Nature Intervention</h6> 
+                      <div class="">
+                        <select class="form-control ">
+                          <option value="">-------</option>
+                          <option value="">Curative</option>                          
+                          <option value="">Préventive</option>
+                        </select>
+                      </div>                                     
                     </div>
                   </div>                  
                   <div class="col-md-6">
@@ -163,6 +147,20 @@
                     </div>
                   </div>
                 </div>
+                <div class="row pt-3">
+                    <div class="col-md-6">
+                        <div class=" ">
+                          <h6>Date Début</h6> 
+                          {{filter.form.datedebut}}                
+                        </div>
+                    </div>                  
+                    <div class="col-md-6">
+                      <div class=" ">
+                        <h6>Date Fin</h6> 
+                        {{filter.form.datefin}}                
+                      </div>
+                    </div>
+                  </div>
                 <div class="row pt-3">
                   <div class="col-md-3">
                     <div class=" ">
@@ -206,137 +204,93 @@
           </div>
         </div>
         <div class="p-3">          
-          <div class="table-responsive scrollable" style="height: 450px">
-            <table class="table mb-0 border-top recent-table table-hover">
-              <thead class="bg-light">
-                <tr>
-                  <th style="width: 5%">Statut</th>                  
-                  <th style="width: 40%">Désignation</th>                  
-                  <th style="width: 20%">Equipement</th>  
-                  <th style="width: 15%">Zone</th>  
-                  <th style="width: 15%">Date</th>
-                  <th style="width: 5%"></th>
-                </tr>
-              </thead>
-              <tbody> 
-                <tr>
-                  <td>
-                    <span
-                      class="badge text-secondary font-weight-medium bg-light-secondary label-rouded"
-                      >Enregistrée</span
-                    >
-                  </td>
-                  <td class="txt-oflo">
-                    DÉMARRAGE À VIDE DU GROUPE ÉLECTROGÈNE CATERPILLAR
-                  </td>
-                  <td class="txt-oflo">GE.Z-3</td>
-                  <td><span class="txt-oflo">Z-3</span></td>
-                  <td><span class="txt-oflo">20/09/2022</span></td>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn btn-light-secondary btn-circle btn-sm d-inline-flex align-items-center justify-content-center"
-                    >
-                      <i
-                        data-feather="eye"
+          
+            <div class="table-responsive scrollable" style="height: 531px">
+                <table class="table mb-0 recent-table table-hover">
+                  <thead class="bg-light">
+                    <tr>
+                      <th width="40%">Désignation</th>
+                      <th width="10%">Nature</th>
+                      <th width="10%">Equipement</th>
+                      <th width="10%">Zone</th>
+                      <th width="10%">Date</th>
+                      <th width="15%">Coût</th>
+                      <th width="5%">P.J</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="txt-oflo">
+                        INSTALLATION DES ONDULEURS 3KVA 
+                      </td>
+                      <td class="txt-oflo">Curative</td>
+                      <td class="txt-oflo">Ond.Z-3</td>
+                      <td>
+                        <span class="txt-oflo">Z-3</span>
+                      </td>
+                      <td><span class="txt-oflo">18/09/2022</span></td>
+                      <td><span class="txt-oflo">13 490,00 DH</span></td>
+                      <td>
+                        <button
+                          type="button"
+                          class="btn btn-text text-light-secondary"
+                        >
+                          <i
+                            data-feather="link"
+                            class="feather-sm fill-white text-secondary"
+                          ></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="txt-oflo">
+                        MPM.GE-Z2
+                      </td>
+                      <td class="txt-oflo">Préventive</td>
+                      <td class="txt-oflo">GE.Z-2</td>
+                      <td><span class="txt-oflo">Z-2</span></td>
+                      <td><span class="txt-oflo">18/09/2022</span></td>                      
+                      <td><span class="txt-oflo">-</span></td>
+                      <td>
+                        <button
+                          type="button"
+                          class="btn text-light-secondary btn-text"
+                        >
+                        <i
+                        data-feather="link"
                         class="feather-sm fill-white text-secondary"
                       ></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <span
-                      class="badge text-success font-weight-medium bg-light-success label-rouded"
-                      >Résolue</span
-                    >
-                  </td>
-                  <td class="txt-oflo">
-                    INSTALLATION DES ONDULEURS 3KVA ( 02 ONDULEURS 3KVA )
-                  </td>
-                  <td class="txt-oflo">Onduleurs</td>
-                  <td>
-                    <span class="txt-oflo">Zone 2</span>
-                  </td>
-                  <td><span class="txt-oflo">18/09/2022</span></td>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn btn-light-secondary btn-circle btn-sm d-inline-flex align-items-center justify-content-center"
-                    >
-                      <i
-                        data-feather="eye"
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="txt-oflo">
+                        DÉMARRAGE À VIDE DU GROUPE ÉLECTROGÈNE CATERPILLAR
+                      </td>
+                      <td class="txt-oflo">Curative</td>
+                      <td class="txt-oflo">GE-CAT.Z-3</td>
+                      <td><span class="txt-oflo">Z-3</span></td>
+                      <td><span class="txt-oflo">20/09/2022</span></td>
+                      <td><span class="txt-oflo">2 543,10 DH</span></td>
+                      <td>
+                        <button
+                          type="button"
+                          class="btn text-light-secondary btn-text"
+                        >
+                        <i
+                        data-feather="link"
                         class="feather-sm fill-white text-secondary"
                       ></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <span
-                      class="badge text-warning font-weight-medium bg-light-warning label-rouded"
-                      >En Cours</span
-                    >
-                  </td>
-                  <td class="txt-oflo">CHANGEMENT DES LAMPES DÉFECTUEUSES</td>
-                  <td class="txt-oflo">Lampes</td>
-                  <td>
-                    <span class="txt-oflo">Zone 2</span>
-                  </td>
-                  <td><span class="txt-oflo">19/09/2022</span></td>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn btn-light-secondary btn-circle btn-sm d-inline-flex align-items-center justify-content-center"
-                    >
-                      <i
-                        data-feather="eye"
-                        class="feather-sm fill-white text-secondary"
-                      ></i>
-                    </button>
-                  </td>
-                </tr>
-
-
-                {% for tache in tacheds %}
-                <tr>
-                  <td>
-                    {% if tache.statut == 'Enregistrée' %}
-                    <span class="badge text-secondary font-weight-medium bg-light-secondary label-rouded" >{{tache.statut}}</span>
-                    {% endif %}
-                    {% if tache.statut == 'Prise en charge' %}
-                    <span class="badge text-info font-weight-medium bg-light-info label-rouded" >{{tache.statut}}</span>
-                    {% endif %}
-                    {% if tache.statut == 'Travaux en cours' %}
-                    <span class="badge text-primary font-weight-medium bg-light-primary label-rouded" >{{tache.statut}}</span>
-                    {% endif %}
-                    {% if tache.statut == 'Pending' %}
-                    <span class="badge text-warning font-weight-medium bg-light-warning label-rouded" >{{tache.statut}}</span>
-                    {% endif %}
-                    {% if tache.statut == 'Résolue' %}
-                    <span class="badge text-success font-weight-medium bg-light-success label-rouded" >{{tache.statut}}</span>
-                    {% endif %}
-                  </td>
-                  <td class="txt-oflo">{{tache.objet}}</td> 
-                  <td class="txt-oflo">{{tache.equipement}}</td>
-                  <td class="txt-oflo">{{tache.zone}}</td>
-                  <td><span class="txt-oflo">{{tache.datecreated|date:"d/m/Y"}}</span></td>
-                  <td>
-                    <a href="{% url 'curativedetail' tache.id %}" class="text-info edit" >
-                      <i data-feather="eye" class="feather-sm fill-white" ></i>
-                    </a>
-                    <a href="{% url 'updatecurative' tache.id %}" class="text-dark delete ms-2" >
-                      <i data-feather="edit" class="feather-sm fill-white" ></i>
-                    </a>
-                    <a href="{% url 'deletecurative' tache.id %}" class="text-danger delete ms-2" >
-                      <i data-feather="trash-2" class="feather-sm fill-white" ></i>
-                    </a>
-                  </td>                  
-                </tr>
-                {% endfor %}              
-              </tbody>
-            </table>
-          </div>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="bg-light " >
+                        <td colspan="5" ><h5> TOTAL : </h5></td>
+                        <td colspan="2" ><h5> 16 833,40 DH</h5></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
         </div>
       </div>
     </div>

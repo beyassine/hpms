@@ -9,34 +9,63 @@
 <!-- ============================================================== -->
 <!-- Tab Section -->
 <!-- ============================================================== -->
-<div class="col-md-12">         
+<div class="col-md-12">
   <div class="card">
     <div class="card-body">
       <!-- Nav tabs -->
-      <ul class="nav nav-pills flex-column flex-sm-row" role="tablist" >
+      <ul class="nav nav-pills flex-column flex-sm-row" role="tablist">
         <li class="nav-item flex-sm-fill text-sm-center">
-          <a class="nav-link " href="{% url 'sitehome' site.id %}" >
-            <span><i class="mdi mdi-view-dashboard"></i> Tableau de Bord</span>
+          <a class="nav-link" href="{% url 'sitehome' site.id %}">
+            <span><i data-feather="grid" class="feather-sm fill-white mb-1" ></i> Tableau de Bord</span>
           </a>
         </li>
         <li class="nav-item flex-sm-fill text-sm-center">
-          <a class="nav-link " href="{% url 'curative' site.id %}" >
-            <span><i class="mdi mdi-clipboard-alert"></i>  Maintenance Curative</span>
+          <div class="btn-group btn-group-sm" role="group">
+            <a
+              id="btnGroupDrop1"
+              type="button"
+              class="nav-link active dropdown-toggle"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <span><i data-feather="check-square" class="feather-sm fill-white mb-1" ></i> Maintenance Site </span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+              <a
+                class="dropdown-item text-primary"
+                href="{% url 'curative' site.id %}"
+              >
+                <span>Maintenance Curative</span>
+              </a>
+              <a
+                class="dropdown-item text-primary"
+                href="{% url 'preventive' site.id %}"
+              >
+                <span>Maintenance Préventive</span>
+              </a>
+              <a
+                class="dropdown-item text-primary"
+                href="{% url 'cout' site.id %}"
+              >
+                <span>Suivi Financier</span>
+              </a>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item flex-sm-fill text-sm-center">
+          <a class="nav-link" href="{% url 'ronde' site.id %}">
+            <span><i data-feather="check-circle" class="feather-sm fill-white mb-1" ></i> Rondes Techniques</span>
+          </a>
+        </li>      
+        <li class="nav-item flex-sm-fill text-sm-center">
+          <a class="nav-link" href="{% url 'di' site.id %}">
+            <span><i data-feather="edit" class="feather-sm fill-white mb-1" ></i> Demande Intervention</span>
           </a>
         </li>
         <li class="nav-item flex-sm-fill text-sm-center">
-          <a class="nav-link active" href="{% url 'preventive' site.id %}" >
-            <span><i class="mdi mdi-calendar "></i> Maintenance Préventive</span>
-          </a>
-        </li>          
-        <li class="nav-item flex-sm-fill text-sm-center">
-          <a class="nav-link " href="{% url 'ronde' site.id %}" >
-            <span><i class="mdi mdi-checkbox-marked-circle-outline "></i> Ronde Maintenance</span>
-          </a>
-        </li>
-        <li class="nav-item flex-sm-fill text-sm-center">
-          <a class="nav-link" href="{% url 'stock' site.id %}" >
-            <span><i class="mdi mdi-layers"></i>  Gestion Stock</span>
+          <a class="nav-link " href="{% url 'detailsite' site.id %}">
+            <span><i data-feather="sliders" class="feather-sm fill-white mb-1" ></i> Administration</span>
           </a>
         </li>
       </ul>
@@ -49,14 +78,13 @@
 <div class="page-breadcrumb border-bottom">
     <div class="row">
         <div class=" col-lg-3 col-md-4 col-xs-12 justify-content-start d-flex align-items-center ">
-            <h5 class="font-weight-medium text-uppercase mb-0">Fiche d'Intervention</h5>
+            <h5 class="font-weight-medium text-uppercase mb-0">{{site.designation}}</h5>
         </div>
         <div class=" col-lg-9 col-md-8 col-xs-12 d-flex justify-content-start justify-content-md-end align-self-center " >
             <nav aria-label="breadcrumb" class="mt-2">
                 <ol class="breadcrumb mb-0 p-0">
-                    <li class="breadcrumb-item">Sites</li>
-                    <li class="breadcrumb-item ">Maintenance Préventive</li>
-                    <li class="breadcrumb-item active">Interventions</li>
+                    <li class="breadcrumb-item">Maintenance Site</li>
+                    <li class="breadcrumb-item active">Fiche Intervention</li>
                 </ol>
             </nav>
         </div>
@@ -80,11 +108,8 @@
   <div class="col-md-12">
     <div class="card card-body">
       <div class="d-flex align-items-center">
-      <h3><b>{{intervention.planification.objet}}</b></h3>
+      <h3><b>Objet Intervention </b></h3>
       <div class="ms-auto">
-        <a class="btn btn-circle btn-secondary text-white " href="{%  url 'updateintervention' intervention.id %}" >
-          <i class="ti-pencil"></i>
-        </a>
         <a class="btn btn-circle btn-warning text-white " >
           <i class="ti-printer"></i>
         </a>
@@ -95,59 +120,71 @@
         <div class="col-md-12">
           <div class="table-responsive" style="clear: both">
             <table class="table ">
-              <tbody>
+              <thead>
                 <tr>
+                  <td width="33%"></td>
+                  <td width="33%"></td>
+                  <td width="34%"></td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="" >
                   <td>
                     <span><u><strong> Intervention Numéro:</strong></u> {{intervention.id}}</span><br/>   
-                    <span><u><strong> Type d'intervention:</strong></u> Maintenance Préventive</span><br/>
-                    <span ><u><strong> Zone:</strong></u> {{intervention.zone}}</span><br/>
-                    <span ><u><strong> Equipement:</strong></u> {{intervention.planification.equipement}}</span><br/>
+                    <span><u><strong> Type d'intervention:</strong></u> Maintenance Préventive</span><br/>   
+                    <span><u><strong> Demandeur:</strong></u> Admin HPMS</span><br/>
+
                   </td>
-                  <td  class="text-end">                 
-                    <span ><u><strong> Date de la demande:</strong></u> {{intervention.datecharge|date:"d/m/Y"}}</span><br/>               
-                    <span><u><strong> Demandeur:</strong></u> Planning</span><br/>
-                                 
+                  <td  class="">
+                    <span ><u><strong> Site:</strong></u> Mon Site</span><br/>
+                    <span ><u><strong> Zone:</strong></u> Zone 1</span><br/>            
+                  </td>
+                  <td>    
+                    <span ><u><strong> Lot Equipement :</strong></u> Lot  1</span><br/> 
+                    <span ><u><strong> Sous Lot Equipement :</strong></u> Sous Lot 1</span><br/>     
+                    <span ><u><strong> Catégorie Equipement :</strong></u> Categorie 1</span><br/>                
+                    <span ><u><strong> Equipement:</strong></u> Equipement 1</span><br/><br/>
                   </td>
                 </tr>               
                 <tr>
                   <td>
-                    <span><u><strong> Statut:</strong></u> &nbsp;{{intervention.statut}}</span><br/>
+                    <span><u><strong> Statut:</strong></u> &nbsp;Résolue</span><br/>
+                    <span><u><strong> Intervenant:</strong></u> &nbsp;Intervenant 1</span><br/>
                   </td>
-                  <td class="text-end">
-                    <span ><u><strong> Date Debut :</strong></u> &nbsp;{{intervention.datedebut|date:"d/m/Y - H:m"}}</span><br/>
-                    <span ><u><strong> Date Fin :</strong></u>
-                      {% if intervention.statut == 'Résolue' %}
-                       {{intervention.datefin|date:"d/m/Y - H:m"}}
-                      {% else %}
-                      &nbsp;&nbsp;&nbsp;--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      {% endif %}
-                    </span><br/>
+                  <td>                    
+                    <span ><u><strong> Date Debut Planifié :</strong></u> &nbsp;19/09/2022</span><br/>
+                    <span ><u><strong> Date Fin Planifié :</strong></u> &nbsp;19/09/2022</span><br/>
                   </td>
-                </tr>
-                <tr>
-                  <td colspan="2" >
-                    <span><u><strong> Description de la cause:</strong></u> &nbsp;{{intervention.description}}</span><br/>
+                  <td class="">
+                    <span ><u><strong> Date Debut Intervention :</strong></u> &nbsp;20/09/2022-10:53</span><br/>
+                    <span ><u><strong> Date Fin Intervention :</strong></u> &nbsp;20/09/2022-12:27</span><br/><br/>
                   </td>
                 </tr>
                 <tr>
-                  <td colspan="2" >
-                    <span><u><strong> Effet sur équipement/ouvrage:</strong></u> &nbsp;{{intervention.effet}}</span><br/>
+                  <td >
+                    <span><u><strong> Piéces de Rechange:</strong></u><br/><br/>
+                       Article 1 - Qté : 2<br/>
+                       Article 2 - Qté : 3<br/>
+                       Article 3 - Qté : 1<br/>
+                      </span><br/><br/>
                   </td>
-                </tr>
-                <tr>
-                  <td colspan="2" >
-                    <span><u><strong> Piéces de rechange/Consommables:</strong></u> &nbsp;{{intervention.rechange}}</span><br/>
-                  </td>
-                </tr>
-                <tr>
                   <td>
-                    <span><u><strong> Image Etat Initilae:</strong></u></span><br/>
+                    <span><u><strong> Description de la cause:</strong></u> &nbsp;<br/><br/> -</span><br/><br/>
+                  </td>
+                  <td>
+                    <span><u><strong> Effet sur équipement/ouvrage:</strong></u> &nbsp;<br/><br/> Rien A Signaler</span><br/><br/>
+                  </td>
+                </tr>
+                <tr>
+                  <td >
+                    <span><u><strong> Image Etat Initilae:</strong></u></span><br/><br/>
                     {% if intervention.imagear.url != ''  %}                    
                     <img src="{{ intervention.imagear.url }}" class="d-block position-relative w-100" alt="user" />
                     {% endif %}
                   </td>
-                  <td  >
-                    <span><u><strong> Image Etat Finale:</strong></u></span><br/>
+                  <td></td>
+                  <td >
+                    <span><u><strong> Image Etat Finale:</strong></u></span><br/><br/>
                     {% if intervention.imagepr.url != ''  %}
                     <img src="{{ intervention.imagepr.url }}" class="d-block position-relative w-100" alt="user" />
                     {% endif %}

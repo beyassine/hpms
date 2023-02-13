@@ -1,0 +1,280 @@
+{% extends "dashboard/base.html"%}
+{% load static%} 
+{% block title %}
+<a class="nav-link waves-effect waves-dark"  href="{% url 'sites' %}" >                  
+  <span class="d-none d-md-block text-uppercase ">{{site.designation}}</span>
+</a>
+{% endblock title %}
+{% block content %}
+<!-- ============================================================== -->
+<!-- Tab Section -->
+<!-- ============================================================== -->
+<div class="col-md-12">         
+  <div class="card">
+    <div class="card-body">
+      <!-- Nav tabs -->
+      <ul class="nav nav-pills flex-column flex-sm-row" role="tablist" >
+        <li class="nav-item flex-sm-fill text-sm-center">
+          <a class="nav-link " href="{% url 'sitehome' site.id %}" >
+            <span><i class="mdi mdi-view-dashboard"></i> Tableau de Bord</span>
+          </a>
+        </li>
+        <li class="nav-item flex-sm-fill text-sm-center">
+          <a class="nav-link active" href="{% url 'curative' site.id %}" >
+            <span><i class="mdi mdi-clipboard-alert"></i>  Maintenance Curative</span>
+          </a>
+        </li>
+        <li class="nav-item flex-sm-fill text-sm-center">
+          <a class="nav-link" href="{% url 'preventive' site.id %}" >
+            <span><i class="mdi mdi-calendar "></i> Maintenance Préventive</span>
+          </a>
+        </li>          
+        <li class="nav-item flex-sm-fill text-sm-center">
+          <a class="nav-link " href="{% url 'ronde' site.id %}" >
+            <span><i class="mdi mdi-checkbox-marked-circle-outline "></i> Ronde Maintenance</span>
+          </a>
+        </li>
+        <li class="nav-item flex-sm-fill text-sm-center">
+          <a class="nav-link" href="{% url 'stock' site.id %}" >
+            <span><i class="mdi mdi-layers"></i>  Gestion Stock</span>
+          </a>
+        </li>
+        <li class="nav-item flex-sm-fill text-sm-center">
+          <a class="nav-link" href="{% url 'stock' site.id %}" >
+            <span><i class="mdi mdi-layers"></i> Site Equipements</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- ============================================================== -->
+<!-- Bread crumb and right sidebar toggle -->
+<!-- ============================================================== -->
+<div class="page-breadcrumb border-bottom">
+  <div class="row">
+      <div class=" col-lg-3 col-md-4 col-xs-12 justify-content-start d-flex align-items-center ">
+          <h5 class="font-weight-medium text-uppercase mb-0">{{site.designation}}</h5>
+      </div>
+      <div class=" col-lg-9 col-md-8 col-xs-12 d-flex justify-content-start justify-content-md-end align-self-center " >
+          <nav aria-label="breadcrumb" class="mt-2">
+              <ol class="breadcrumb mb-0 p-0">
+                  <li class="breadcrumb-item">Sites</li>
+                  <li class="breadcrumb-item active" aria-current="page">
+                    Maintenance Curative
+                  </li>
+              </ol>
+          </nav>
+      </div>
+  </div>
+</div>
+<!-- ============================================================== -->
+<!-- End Bread crumb and right sidebar toggle -->
+<!-- ============================================================== -->
+<!-- Container fluid  -->
+<!-- ============================================================== -->
+<div class="page-content container-fluid">
+{% if messages %}
+  {% for message in messages%}
+    <div class="alert alert-{{ message.tags}} alert-dismissible fade show" role="alert">
+      {{message}}
+      <button type="button" class="btn-close text-white" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+{% endif %}
+
+  <!-- Liste des interventions  -->
+  <!-- ============================================================== -->
+  <div class="row">
+    <div class="col-md-12 col-lg-12">
+      <div class="card ">
+        <div class="card-body">
+          <div class="d-flex align-items-center px-3 py-4 border-bottom">
+            <div>
+              <h4 class="card-title">Equipements du Site</h4>
+            </div>
+            <div class="ms-auto">
+              <a class="btn btn-circle btn-secondary text-white" data-bs-toggle="collapse" href="#collapseExample"
+                    role="button" aria-expanded="false" aria-controls="collapseExample" > 
+                    <i class="ti-filter"></i>
+              </a>              
+              <a class="btn btn-circle btn-success text-white " href="{% url 'newsiteequipement' site.id %}" >
+                <i class="ti-plus"></i>
+              </a>
+            </div>
+          </div>
+          <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+              <form id="equipementFilter" method="get" data-souslot-url="{% url 'loadsouslot' %}" data-categorie-url="{% url 'loadcategorie' %}" data-equipement-url="{% url 'loadequipement' %}">
+                {% csrf_token %}
+                <div class="row pt-3">
+                  <div class="col-md-1">
+                    <div class=" ">
+                      <h6>Criticité</h6> 
+                      {{filter.form.criticite}}                
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <div class=" ">
+                      <h6>Statut</h6> 
+                      {{filter.form.statut}}                
+                    </div>
+                  </div>                  
+                  <div class="col-md-6">
+                    <div class=" ">
+                      <h6>Zone</h6> 
+                      {{filter.form.zone}}                
+                    </div>
+                  </div>
+                </div>
+                <div class="row pt-3">
+                  <div class="col-md-6">
+                    <div class="">
+                      <h6>Date Début</h6> 
+                      {{filter.form.date_debut}}
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                      <div class="">
+                        <h6>Date Fin</h6> 
+                        {{filter.form.date_fin}}
+                      </div>
+                  </div>
+                </div>
+                <div class="row pt-3">
+                  <div class="col-md-3">
+                    <div class=" ">
+                      <h6>Lot</h6> 
+                      {{filter.form.lot}}                
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                      <div class="">
+                        <h6>Sous Lot</h6> 
+                        {{filter.form.souslot}}
+                      </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class=" ">
+                      <h6>Catégorie</h6> 
+                      {{filter.form.categorie}}                
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                      <div class="">
+                        <h6>Equipement</h6> 
+                        {{filter.form.equipement}}
+                      </div>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <div class="card-body">              
+                    <div class="d-flex align-items-center p-4">
+                      <div class="ms-auto">
+                        <button type="submit" class="btn btn-secondary rounded-pill px-4 float-right" >
+                          <div class="d-flex align-items-center">
+                            Filtrer
+                          </div>
+                        </button>
+                      </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="p-3">          
+          <div class="table-responsive scrollable" style="height: 450px">
+            <table class="table mb-0  recent-table table-hover">
+              <thead class="bg-light">
+                <tr>                                
+                  <th style="width: 30%">Equipement</th>  
+                  <th style="width: 25%">Lot</th>
+                  <th style="width: 30%">Zone</th>  
+                  <th style="width: 15%"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for equipement in equipements %}
+                <tr>
+                  <td class="txt-oflo">{{equipement.equipement.designation}}</td> 
+                  <td class="txt-oflo">{{equipement.lot}}</td>
+                  <td class="txt-oflo">{{equipement.zone}}</td>
+                  <td>
+                    <a href="" class="text-info edit" >
+                      <i data-feather="eye" class="feather-sm fill-white" ></i>
+                    </a>
+                    <a href="" class="text-dark delete ms-2" >
+                      <i data-feather="edit" class="feather-sm fill-white" ></i>
+                    </a>
+                    <a href="" class="text-danger delete ms-2" >
+                      <i data-feather="trash-2" class="feather-sm fill-white" ></i>
+                    </a>
+                  </td>                  
+                </tr>
+                {% endfor %}              
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- ============================================================== -->
+<!-- End Container fluid  -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+
+{% endblock content %}
+
+{% block footer %}
+
+<script type="text/javascript">
+
+  $("#id_lot").change(function () {
+       var url = $("#equipementFilter").attr("data-souslot-url");  
+       var lotid = $(this).val();   
+       $.ajax({                       
+         url: url,                    
+         data: {
+           'lotid': lotid       
+         },
+         success: function (data) {  
+           $("#id_souslot").html(data);  
+         }
+       }); 
+     });
+ 
+     $("#id_souslot").change(function () {
+       var url = $("#equipementFilter").attr("data-categorie-url");  
+       var souslotid = $(this).val();   
+       $.ajax({                       
+         url: url,                    
+         data: {
+           'souslotid': souslotid       
+         },
+         success: function (data) {  
+           $("#id_categorie").html(data);  
+         }
+       }); 
+     });
+
+     $("#id_categorie").change(function () {
+       var url = $("#equipementFilter").attr("data-equipement-url");  
+       var categorieid = $(this).val();   
+       $.ajax({                       
+         url: url,                    
+         data: {
+           'categorieid': categorieid       
+         },
+         success: function (data) {  
+           $("#id_equipement").html(data);  
+         }
+       }); 
+     });
+
+ </script>
+
+{% endblock footer %}
